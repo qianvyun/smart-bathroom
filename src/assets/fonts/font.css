@@ -1,0 +1,41 @@
+@font-face {
+  font-family: "HYRuiZhiW";
+  src: url("./HYRuiZhiW-2.eot");
+  src: url("./HYRuiZhiW-2.eot?#iefix") format("embedded-opentype"),
+  url("./HYRuiZhiW-2.woff") format("woff"),
+  url("./HYRuiZhiW-2.ttf") format("truetype"),
+  url("./HYRuiZhiW-2.svg") format("svg");
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: "LiquidCrystalBold";
+  src: url("./LiquidCrystal-Bold.eot");
+  src: url("./LiquidCrystal-Bold.eot?#iefix")
+  format("embedded-opentype"),
+  url("./LiquidCrystal-Bold.woff") format("woff"),
+  url("./LiquidCrystal-Bold.ttf") format("truetype"),
+  url("./LiquidCrystal-Bold.svg") format("svg");
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: "NotoSansCJKRegular";
+  src: url("./NotoSansCJK-Regular-1.eot");
+  src: url("./NotoSansCJK-Regular-1.eot?#iefix")
+  format("embedded-opentype"),
+  url("./NotoSansCJK-Regular-1.woff") format("woff"),
+  url("./NotoSansCJK-Regular-1.ttf") format("truetype"),
+  url("./NotoSansCJK-Regular-1.svg") format("svg");
+  font-weight: normal;
+}
+@font-face {
+  font-family: "FZZCHJW";
+  src: url("./FZZCHJW.eot");
+  src: url("./FZZCHJW.eot?#iefix")
+  format("embedded-opentype"),
+  url("./FZZCHJW.woff") format("woff"),
+  url("./FZZCHJW.ttf") format("truetype"),
+  url("./FZZCHJW.svg") format("svg");
+  font-weight: normal;
+}
