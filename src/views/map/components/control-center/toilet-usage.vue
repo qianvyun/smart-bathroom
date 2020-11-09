@@ -25,16 +25,25 @@ export default {
     },
     chartData: {
       type: Object,
-      // required: true
+      required: true
     }
   },
   data() {
     return {
       chart: null,
       usageData: [
-        { value: 128, name: '女性', selected: true },
-        { value: 80, name: '男性' }
+        { value: this.chartData.woman, name: '女性', selected: true },
+        { value: this.chartData.man, name: '男性' }
       ]
+    }
+  },
+  watch: {
+    chartData(newValue, oldValue) {
+      this.usageData[0].value = newValue.woman;
+      this.usageData[0].value = newValue.man;
+      this.$nextTick(() => {
+        this.initChart()
+      })
     }
   },
   mounted() {
@@ -75,11 +84,11 @@ export default {
           left: 'center',
           top: '54%',
           style: {
-            text: '300',
+            text: Number(this.chartData.woman) + Number(this.chartData.man),
             textAlign: 'center',
             textVerticalAlign: 'middle',
             fill: '#80edf4',
-            font: '1.25vw LiquidCrystalBold'
+            font: '1vw LiquidCrystalBold'
           }
         },
         legend: {

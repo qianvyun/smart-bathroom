@@ -45,7 +45,9 @@ export function parseTime(time, cFormat) {
   const time_str = format.replace(/{([ymdhisa])+}/g, (result, key) => {
     const value = formatObj[key]
     // Note: getDay() returns 0 on Sunday
-    if (key === 'a') { return ['日', '一', '二', '三', '四', '五', '六'][value ] }
+    if (key === 'a') {
+      return ['日', '一', '二', '三', '四', '五', '六'][value]
+    }
     return value.toString().padStart(2, '0')
   })
   return time_str
@@ -95,6 +97,60 @@ export function formatTime(time, option) {
 }
 
 /**
+ * 获取两个日期之间的所有日期
+ * @param stime 开始日期
+ * @param etime
+ */
+export function getdiffdate(stime, etime) {
+  // 初始化日期列表，数组
+  const diffdate = []
+  let i = 0
+  // 开始日期小于等于结束日期,并循环
+  while (stime <= etime) {
+    diffdate[i] = stime
+    // 获取开始日期时间戳
+    const stime_ts = new Date(stime).getTime()
+    // 增加一天时间戳后的日期
+    const next_date = stime_ts + (24 * 60 * 60 * 1000)
+
+    // 拼接年月日，这里的月份会返回（0-11），所以要+1
+    const next_dates_y = new Date(next_date).getFullYear() + '-'
+    const next_dates_m = (new Date(next_date).getMonth() + 1 < 10) ? '0' + (new Date(next_date).getMonth() + 1) + '-' : (new Date(next_date).getMonth() + 1) + '-'
+    const next_dates_d = (new Date(next_date).getDate() < 10) ? '0' + new Date(next_date).getDate() : new Date(next_date).getDate()
+    stime = next_dates_y + next_dates_m + next_dates_d
+    // 增加数组key
+    i++
+  }
+  return diffdate
+}
+
+/**
+ * 获取当前日期指定前几天的日期
+ * @param n
+ * @returns {*}
+ */
+export function getBeforeDate(n) {
+  const d = new Date()
+  let year = d.getFullYear()
+  let mon = d.getMonth() + 1
+  let day = d.getDate()
+  if (day <= n) {
+    if (mon > 1) {
+      mon = mon - 1
+    } else {
+      year = year - 1
+      mon = 12
+    }
+  }
+  d.setDate(d.getDate() - n)
+  year = d.getFullYear()
+  mon = d.getMonth() + 1
+  day = d.getDate()
+  const s = year + '-' + (mon < 10 ? ('0' + mon) : mon) + '-' + (day < 10 ? ('0' + day) : day)
+  return s
+}
+
+/**
  * @param {string} url
  * @returns {Object}
  */
@@ -122,8 +178,9 @@ export function byteLength(str) {
   let s = str.length
   for (var i = str.length - 1; i >= 0; i--) {
     const code = str.charCodeAt(i)
-    if (code > 0x7f && code <= 0x7ff) s++
-    else if (code > 0x7ff && code <= 0xffff) s += 2
+    if (code > 0x7f && code <= 0x7ff) {
+      s++
+    } else if (code > 0x7ff && code <= 0xffff) s += 2
     if (code >= 0xDC00 && code <= 0xDFFF) i--
   }
   return s

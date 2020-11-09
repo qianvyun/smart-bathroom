@@ -32,7 +32,7 @@ export default {
     return {
       chart: null,
       // x轴数据
-      xAxisData: ['7/3', '7/4', '7/5', '7/6', '7/7', '7/8', '7/9'],
+      xAxisData: [],
       // 氨气（男）
       ammoniaMan: [16, 15, 22, 26, 34, 43, 28],
       // 氨气（女）
@@ -41,6 +41,12 @@ export default {
       hydrogenMan: [3, 9, 23, 16, 20, 22, 18],
       // 硫化氢（女）
       hydrogenWoman: [11, 13, 14, 17, 20, 24, 22]
+    }
+  },
+  created() {
+    const currentHour = new Date().getHours();
+    for (let i = 0; i <= currentHour; i++) {
+      this.xAxisData.push(i)
     }
   },
   mounted() {
@@ -61,7 +67,7 @@ export default {
 
       this.chart.setOption({
         title: {
-          text: '氨气/硫化氢今日曲线',
+          text: '异味今日曲线',
           textStyle: {
             color: '#d7f2ff',
             fontFamily: 'FZZCHJW',
@@ -76,7 +82,7 @@ export default {
           trigger: 'axis',
           showContent: false
         },
-        color: ['#fff441', '#51ffb3', '#e7a218', '#2cccdf'],
+        color: [ '#e7a218', '#2cccdf'], // '#fff441', '#51ffb3',
         legend: {
           right: '9%',
           top: '6%',
@@ -91,7 +97,7 @@ export default {
             fontSize: 10,
             lineHeight: 1
           },
-          data: ['氨气(男)', '硫化氢(男)', '氨气(女)', '硫化氢(女)'],
+          data: ['异味(男)', '异味(女)'],
           selectedMode: false
         },
         grid: {
@@ -156,7 +162,7 @@ export default {
           }
         ],
         series: [{
-          name: '氨气(男)',
+          name: '异味(男)',
           data: this.ammoniaMan,
           // data: warnCount,
           type: 'line',
@@ -181,7 +187,7 @@ export default {
           }
         },
         {
-          name: '硫化氢(男)',
+          name: '异味(女)',
           data: this.hydrogenMan,
           // data: warnCount,
           type: 'line',
@@ -203,7 +209,7 @@ export default {
           lineStyle: {
             width: 4
           }
-        },
+        /*},
         {
           name: '氨气(女)',
           data: this.ammoniaWoman,
@@ -250,7 +256,7 @@ export default {
           },
           lineStyle: {
             width: 4
-          }
+          }*/
         }]
       })
     }

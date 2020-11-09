@@ -22,47 +22,47 @@
     <div class="bottom-warp" v-if="!isAccessibleToilet">
       <ul class="clear">
         <li class="weather">
-          <div class="icon-warp"><i class="icon icon-temperature"></i></div>
+          <div class="icon-warp"><i class="icon icon-temperature" /></div>
           <div class="describe">温度</div>
           <div class="current-weather">24℃</div>
         </li>
         <li class="weather">
-          <div class="icon-warp"><i class="icon icon-hydrothion"></i></div>
+          <div class="icon-warp"><i class="icon icon-hydrothion" /></div>
           <div class="describe">硫化氢</div>
           <div class="current-weather">24℃</div>
         </li>
         <li class="weather">
-          <div class="icon-warp"><i class="icon icon-ammonia"></i></div>
+          <div class="icon-warp"><i class="icon icon-ammonia" /></div>
           <div class="describe">氨气</div>
           <div class="current-weather">24℃</div>
         </li>
         <li class="weather">
-          <div class="icon-warp"><i class="icon icon-primary-air-system"></i></div>
+          <div class="icon-warp"><i class="icon icon-primary-air-system" /></div>
           <div class="describe">新风系统</div>
           <div class="current-weather">24℃</div>
         </li>
         <li class="weather">
-          <div class="icon-warp"><i class="icon icon-pm25"></i></div>
+          <div class="icon-warp"><i class="icon icon-pm25" /></div>
           <div class="describe">PM2.5</div>
           <div class="current-weather">24℃</div>
         </li>
         <li class="weather">
-          <div class="icon-warp"><i class="icon icon-fumee help"></i></div>
+          <div class="icon-warp"><i class="icon icon-fumee help" /></div>
           <div class="describe">烟雾报警</div>
           <div class="current-weather">24℃</div>
         </li>
         <li class="weather">
-          <div class="icon-warp"><i class="icon icon-eclairage"></i></div>
+          <div class="icon-warp"><i class="icon icon-eclairage" /></div>
           <div class="describe">光照度</div>
           <div class="current-weather">24℃</div>
         </li>
         <li class="weather">
-          <div class="icon-warp"><i class="icon icon-pipeline"></i></div>
-          <div class="describe">下管堵塞</div>
+          <div class="icon-warp"><i class="icon icon-pipeline" /></div>
+          <div class="describe">异味</div>
           <div class="current-weather">24℃</div>
         </li>
         <li class="weather">
-          <div class="icon-warp"><i class="icon icon-humidite"></i></div>
+          <div class="icon-warp"><i class="icon icon-humidite" /></div>
           <div class="describe">湿度</div>
           <div class="current-weather">24℃</div>
         </li>

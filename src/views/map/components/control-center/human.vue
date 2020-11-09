@@ -6,6 +6,7 @@
 import echarts from 'echarts'
 // require('echarts/theme/macarons') // echarts theme
 import resize from '../mixins/resize'
+import { getdiffdate, getBeforeDate } from '@/utils/index'
 
 export default {
   name: 'Human',
@@ -24,16 +25,35 @@ export default {
       default: '25vh'
     },
     chartData: {
-      type: Object,
-      // required: true
+      type: Array,
+      required: true
     }
   },
   data() {
     return {
       chart: null,
-      xAxisData: ['7/3', '7/4', '7/5', '7/6', '7/7', '7/8', '7/9'],
-      humanData: [16, 15, 22, 26, 34, 43, 28]
+      xAxisData: [],
+      humanData: this.chartData
     }
+  },
+  watch: {
+    chartData(newVal, oldVal) {
+      this.humanData = newVal;
+      this.$nextTick(() => {
+        this.initChart()
+      })
+    }
+  },
+  created() {
+    const dayTime = new Date()
+    const year = dayTime.getFullYear()
+    const mon = dayTime.getMonth() + 1
+    const day = dayTime.getDate()
+    const currentDate = year + '-' + (mon < 10 ? ('0' + mon) : mon) + '-' + (day < 10 ? ('0' + day) : day);
+    const beforeDate = getBeforeDate(7)
+    getdiffdate(beforeDate, currentDate).forEach((item) => {
+      this.xAxisData.push(item.slice(5))
+    });
   },
   mounted() {
     this.$nextTick(() => {

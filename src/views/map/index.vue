@@ -2,9 +2,7 @@
   <div class="map">
     <div class="map-warp">
       <el-amap vid="amap" :zoom="zoom" :center="center" :events="mapEvents">
-        <template v-for="project of placeList">
-          <el-amap-marker :key="project.id" :position="project.place" :content="content" :events="markerEvents" />
-        </template>
+        <el-amap-marker v-for="(project) in placeList" :content="content" :position="project.place" :events="markerEvents" :draggable="false" :vid="project.id" />
       </el-amap>
     </div>
 
@@ -48,13 +46,11 @@
     </div>
 
     <el-dialog :fullscreen="true" :visible.sync="isShowControlCenterVisible" custom-class="control-center-modal">
-      <control-center />
+      <control-center :toilet-details="toiletDetails" :toilet-name="currentToiletName" />
     </el-dialog>
 
     <el-dialog :visible.sync="isShowOverviewVisible" :close-on-click-modal="false" :modal="false" width="430px" custom-class="overview-modal">
-      <overview
-        :city="center"
-      />
+      <overview :city="center" />
     </el-dialog>
 
     <CreateBathroom :place="coordinate" :is-show-add-bathroom-visible="isShowAddBathroomVisible" @close-create-model="closeCreateModel" />
@@ -68,7 +64,7 @@ import { mapGetters } from 'vuex'
 import screenfull from 'screenfull'
 import AlarmModal from '@/views/map/components/alarm-modal'
 import Overview from '@/views/map/components/Overview/Overview'
-import { getAlarmData } from '@/api/map'
+import { getAlarmData, getToiletDetails } from '@/api/map'
 import CreateBathroom from '@/views/map/components/create-bathroom'
 
 export default {
@@ -82,6 +78,10 @@ export default {
       center: [103.82, 36.07],
       // 显示厕所智能控制中心
       isShowControlCenterVisible: false,
+      // 控制中心数据
+      toiletDetails: '',
+      // 点击marker点的id
+      currentToiletName: '',
       // 显示总览
       isShowOverviewVisible: false,
       // 显示告警信息
@@ -97,17 +97,19 @@ export default {
         },
         click: (m) => {
           if (this.isHandleMapCoordinate) {
-            this.coordinate = m.lnglat.lat + ',' + m.lnglat.lng;
+            this.coordinate = m.lnglat.lng + ',' + m.lnglat.lat;
             this.isShowAddBathroomVisible = true;
           }
         }
       },
       // 点的事件
       markerEvents: {
-        click: () => {
+        click: (e) => {
+          console.log(e)
+          // 没有全局概览
           if (!this.isHandleMapCoordinate) {
-            // 显示控制中心
-            this.isShowControlCenterVisible = true;
+            // e.target.w.vid 项目的id
+            this.getToiletDetails(e.target.w.vid);
           }
         }
       },
@@ -222,6 +224,30 @@ export default {
       const res = await getAlarmData(requestData);
       this.alarmData = res.data;
       this.alarmNum = this.alarmData.list.length;
+    },
+    // 获取厕所详细信息
+    async getToiletDetails(id) {
+      const requestData = {
+        toiletId: '1'
+      }
+      const res = await getToiletDetails(requestData);
+      this.toiletDetails = res.data.data;
+      if (this.toiletDetails) {
+        for (let i = 0; i < this.projectData.length; i++) {
+          if (this.projectData[i].id === id) {
+            // 根据点击“点”的id获取项目名称
+            this.currentToiletName = this.projectData[i].placeName;
+          }
+        }
+        // 显示控制中心
+        this.isShowControlCenterVisible = true;
+      } else {
+        this.$message({
+          message: '没有改厕所的详情数据',
+          type: 'warning'
+        })
+        return false
+      }
     },
     // toggleSideBar() {
     //   this.$store.dispatch('app/toggleSideBar')

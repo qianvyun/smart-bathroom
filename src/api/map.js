@@ -23,3 +23,11 @@ export function addToilet(data) {
     data
   })
 }
+
+export function getToiletDetails(data) {
+  return request({
+    url: '/toiletreport/getreport',
+    method: 'post',
+    data
+  })
+}

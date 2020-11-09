@@ -2,25 +2,25 @@
   <div class="control-center-warp">
     <div class="control-center-header">
       <h3>智慧公厕调度指挥系统</h3>
-      <h5 class="public-toilet-name">仙林一号公厕</h5>
+      <h5 class="public-toilet-name">{{ currentToiletName }}</h5>
     </div>
     <div class="control-center-body">
       <div class="control-center-left">
         <div class="chart-warp">
-          <div class="chart-box-top"><span></span></div>
+          <div class="chart-box-top"><span /></div>
           <div class="chart-box-main">
-            <toilet-usage />
+            <toilet-usage :chart-data="toiletUsageData" />
           </div>
         </div>
         <div class="chart-warp">
-          <div class="chart-box-top"><span></span></div>
+          <div class="chart-box-top"><span /></div>
           <div class="chart-box-main">
-            <human />
+            <human :chart-data="humanData"/>
           </div>
         </div>
         <div class="chart-warp">
-          <div class="chart-box-top"><span></span></div>
-          <hygiene/>
+          <div class="chart-box-top"><span /></div>
+          <hygiene />
         </div>
       </div>
       <div class="control-center-middle">
@@ -59,21 +59,21 @@
           </ul>
         </div>
         <div class="state-warp">
-          <toilet-state toiletType="man" />
-          <toilet-state toiletType="woman" />
+          <toilet-state toilet-type="man" />
+          <toilet-state toilet-type="woman" />
         </div>
       </div>
       <div class="control-center-right">
-        <toilet-state :isAccessibleToilet="true" toiletType="accessible" />
+        <toilet-state :is-accessible-toilet="true" toilet-type="accessible" />
         <div class="chart-warp">
-          <div class="chart-box-top"><span></span></div>
+          <div class="chart-box-top"><span /></div>
           <div class="chart-box-main">
             <ammonia-hydrothion-current />
           </div>
         </div>
         <div class="chart-warp">
-          <div class="chart-box-top"><span></span></div>
-          <monitor/>
+          <div class="chart-box-top"><span /></div>
+          <monitor />
         </div>
       </div>
     </div>
@@ -97,13 +97,28 @@ export default {
     Monitor,
     Hygiene
   },
+  props: {
+    toiletDetails: {
+      type: Object,
+      required: true
+    },
+    toiletName: {
+      type: String,
+      default: '仙林一号'
+    }
+  },
   data() {
     return {
       chartWidth: '',
-      chartHeight: ''
+      chartHeight: '',
+      currentToiletName: this.toiletName,
+      toiletUsageData: {
+        woman: 0,
+        man: 0
+      },
+      // 近八天的总人流量
+      humanData: []
     }
-  },
-  created() {
   },
   computed: {
     // chartWidth() {
@@ -116,6 +131,18 @@ export default {
     //   let chartH;
     //   return chartH;
     // }
+  },
+  created() {
+    console.log(this.toiletDetails)
+    console.log(this.currentToiletName)
+    // 获取男女适用比例
+    this.toiletUsageData.woman = this.toiletDetails.femalePersonSum;
+    this.toiletUsageData.man = this.toiletDetails.malePersonSum;
+    // 计算人流量数据
+    this.toiletDetails.femalePersonSumDetail.forEach((item, index) => {
+      this.humanData.push(Number(item) + Number(this.toiletDetails.malePersonSumDetail[index]))
+    })
+    console.log(this.humanData)
   }
 }
 </script>
