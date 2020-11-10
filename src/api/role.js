@@ -31,9 +31,9 @@ export function updateUser(id, data) {
   })
 }
 
-/*export function deleteUser(id) {
+export function deleteUser(id) {
   return request({
-    url: `/vue-element-admin/role/${id}`,
-    method: 'delete'
+    url: `/user/delete/${id}`,
+    method: 'get'
   })
-}*/
+}

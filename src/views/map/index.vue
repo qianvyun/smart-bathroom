@@ -253,6 +253,7 @@ export default {
     //   this.$store.dispatch('app/toggleSideBar')
     // },
     locationHandle(val) {
+      console.log(val)
       this.alarmLoction = val;
     },
     handleNodeClick(data) {

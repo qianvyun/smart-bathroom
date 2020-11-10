@@ -2,13 +2,13 @@
   <div class="permission-container">
     <div class="permission-container-warp">
       <div class="permission-container-header">
-        <div class="title"><i class="icon icon-list" />用户列表</div>
+        <div class="title"><i class="icon icon-list"/>用户列表</div>
         <div class="add-user">
-          <el-button type="primary" @click="handleAddRole"><i class="icon icon-add" />添加用户</el-button>
+          <el-button type="primary" @click="handleAddRole"><i class="icon icon-add"/>添加用户</el-button>
         </div>
       </div>
 
-      <el-table v-loading="listLoading" :data="usersList" height="calc(100vh - 260px)" style="width: 100%;margin-top:30px;" border>
+      <el-table v-loading="listLoading" :data="usersList" height="calc(100vh - 260px)" style="width: 100%;margin-top:30px;" border >
         <el-table-column align="center" label="用户名称" width="200">
           <template slot-scope="scope">
             {{ scope.row.username }}
@@ -26,8 +26,11 @@
         </el-table-column>
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
-            <el-button size="small" type="primary" class="edit" @click="handleEdit(scope)"><i class="icon el-icon-edit" />编辑</el-button>
-            <el-button size="small" class="delete" @click="handleDelete(scope)"><i class="icon icon-delete" />删除</el-button>
+            <el-button size="small" type="primary" class="edit" @click="handleEdit(scope)">
+              <i class="icon el-icon-edit" />编辑
+            </el-button>
+            <el-button size="small" class="delete" @click="handleDelete(scope)"><i class="icon icon-delete"/>删除
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -53,10 +56,10 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="邮箱：">
-          <el-input v-model="user.email" placeholder="邮箱" />
+          <el-input v-model="user.email" placeholder="邮箱"/>
         </el-form-item>
         <el-form-item label="电话：">
-          <el-input v-model="user.mobile" placeholder="电话" />
+          <el-input v-model="user.mobile" placeholder="电话"/>
         </el-form-item>
         <el-form-item label="用户类别：">
           <el-radio-group v-model="user.userType">
@@ -89,9 +92,8 @@
 <script>
 import path from 'path'
 import { deepClone } from '@/utils'
-import { getRoutes, getUsers, addUser, updateUser } from '@/api/role'
+import { getUsers, addUser, updateUser, deleteUser } from '@/api/role'
 import Pagination from '@/components/Pagination'
-import { fetchList } from '@/api/article'
 import { mapGetters } from 'vuex'
 
 const defaultUserMassage = {
@@ -132,39 +134,29 @@ export default {
       'userMassage',
       'projectList'
     ])
-    // routesData() {
-    //   return this.routes
-    // }
   },
   created() {
-    // Mock: get all routes and roles list from server
-    // this.getRoutes()
     this.getUsersList()
   },
   methods: {
     userType(type) {
-      let typeName = '管理员';
+      let typeName = '管理员'
       switch (type) {
         case '1':
-          typeName = '普通用户';
-          break;
+          typeName = '普通用户'
+          break
         case '2':
-          typeName = '保洁';
-          break;
+          typeName = '保洁'
+          break
         case '3':
-          typeName = '维修';
-          break;
+          typeName = '维修'
+          break
         default:
-          typeName = '管理员';
-          break;
+          typeName = '管理员'
+          break
       }
-      return typeName;
+      return typeName
     },
-    // async getRoutes() {
-    //   const res = await getRoutes()
-    //   this.serviceRoutes = res.data
-    //   this.routes = this.generateRoutes(res.data)
-    // },
     async getUsersList() {
       const requestData = {
         username: this.userMassage.username,
@@ -172,40 +164,12 @@ export default {
         page: this.listQuery.page,
         limit: this.listQuery.limit
       }
-      this.listLoading = true;
+      this.listLoading = true
       const res = await getUsers(requestData)
-      this.listLoading = false;
-      this.usersList = res.data.list;
-      this.total = res.data.totalCount;
+      this.listLoading = false
+      this.usersList = res.data.list
+      this.total = res.data.totalCount
     },
-
-    // Reshape the routes structure so that it looks the same as the sidebar
-    // generateRoutes(routes, basePath = '/') {
-    //   const res = []
-    //
-    //   for (let route of routes) {
-    //     // skip some route
-    //     if (route.hidden) { continue }
-    //
-    //     const onlyOneShowingChild = this.onlyOneShowingChild(route.children, route)
-    //
-    //     if (route.children && onlyOneShowingChild && !route.alwaysShow) {
-    //       route = onlyOneShowingChild
-    //     }
-    //
-    //     const data = {
-    //       path: path.resolve(basePath, route.path),
-    //       title: route.meta && route.meta.title
-    //     }
-    //
-    //     // recursive child routes
-    //     if (route.children) {
-    //       data.children = this.generateRoutes(route.children, data.path)
-    //     }
-    //     res.push(data)
-    //   }
-    //   return res
-    // },
     generateArr(projects) {
       let data = []
       projects.forEach(project => {
@@ -234,7 +198,6 @@ export default {
       this.user = deepClone(scope.row)
       this.user.sex = this.user.sex.toString()
       this.user.userType = this.user.userType.toString()
-      console.log(this.user)
       this.$nextTick(() => {
         // const projects = this.generateProjects(this.user.projects)
         this.$refs.tree.setCheckedNodes(this.generateArr(this.user.projects))
@@ -249,33 +212,17 @@ export default {
         type: 'warning'
       })
         .then(async() => {
-          console.log('删除用户')
-          //   await deleteUser(row.key)
-        //   this.usersList.splice($index, 1)
-        //   this.$message({
-        //     type: 'success',
-        //     message: '删除成功!'
-        //   })
+          await deleteUser(row.id)
+          this.usersList.splice($index, 1)
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
         })
-        .catch(err => { console.error(err) })
+        .catch(err => {
+          console.error(err)
+        })
     },
-    // generateTree(routes, basePath = '/', checkedKeys) {
-    //   const res = []
-    //
-    //   for (const route of routes) {
-    //     const routePath = path.resolve(basePath, route.path)
-    //
-    //     // recursive child routes
-    //     if (route.children) {
-    //       route.children = this.generateTree(route.children, routePath, checkedKeys)
-    //     }
-    //
-    //     if (checkedKeys.includes(routePath) || (route.children && route.children.length >= 1)) {
-    //       res.push(route)
-    //     }
-    //   }
-    //   return res
-    // },
     generateTree(projects, checkedKeys) {
       const res = []
 
@@ -291,12 +238,9 @@ export default {
       return res
     },
     async confirmUser() {
-      console.log('aaa')
       const isEdit = this.dialogType === 'edit'
-
       const checkedKeys = this.$refs.tree.getCheckedKeys()
       this.user.project = this.generateTree(deepClone(this.projectList), checkedKeys)
-
       if (isEdit) {
         await updateUser(this.user.key, this.user)
         for (let index = 0; index < this.usersList.length; index++) {
@@ -307,8 +251,6 @@ export default {
         }
       } else {
         const { data } = await addUser(this.user)
-
-        console.log(data)
         this.user.key = data.key
         this.usersList.push(this.user)
       }
@@ -319,13 +261,12 @@ export default {
         title: 'Success',
         dangerouslyUseHTMLString: true,
         message: `
-            <div>用户名: ${username}</div>
-            <div>姓名: ${name}</div>
-          `,
+          <div>用户名: ${username}</div>
+          <div>姓名: ${name}</div>
+        `,
         type: 'success'
       })
     },
-    // reference: src/view/layout/components/Sidebar/SidebarItem.vue
     onlyOneShowingChild(children = [], parent) {
       let onlyOneChild = null
       const showingChildren = children.filter(item => !item.hidden)
@@ -339,7 +280,7 @@ export default {
 
       // Show parent if there are no child route to display
       if (showingChildren.length === 0) {
-        onlyOneChild = { ... parent, path: '', noShowingChildren: true }
+        onlyOneChild = { ...parent, path: '', noShowingChildren: true }
         return onlyOneChild
       }
 
@@ -349,19 +290,22 @@ export default {
 }
 </script>
 <style lang="scss">
-  .permission-container{
-    .el-button--primary{
+  .permission-container {
+    .el-button--primary {
       background: #369AFE;
       border-color: #369AFE;
     }
-    .cell .el-button{
+
+    .cell .el-button {
       border-radius: 8px;
-      &.delete{
+
+      &.delete {
         border-color: #ACC5FF;
         color: #2C6AF6;
         padding: 8px 15px;
       }
-      i{
+
+      i {
         display: inline-block;
         margin-top: -3px;
         margin-right: 5px;
@@ -372,7 +316,7 @@ export default {
   }
 </style>
 <style lang="scss" scoped>
-  .permission-container{
+  .permission-container {
     width: 100%;
     height: calc(100vh - 78px);
     padding: 25px;
@@ -380,21 +324,25 @@ export default {
     overflow: hidden;
     font-family: NotoSansCJKRegular;
     font-size: 14px;
-    .permission-container-warp{
+
+    .permission-container-warp {
       background: #fff;
       border-radius: 6px;
       height: calc(100vh - 128px);
       padding: 0 40px;
     }
-    .permission-container-header{
+
+    .permission-container-header {
       position: relative;
       padding-top: 12px;
       height: 42px;
-      .title{
+
+      .title {
         line-height: 30px;
         color: rgba(72, 83, 133, .8);
         vertical-align: middle;
-        i{
+
+        i {
           display: inline-block;
           margin-top: -3px;
           margin-right: 10px;
@@ -404,11 +352,13 @@ export default {
           vertical-align: middle;
         }
       }
-      .add-user{
+
+      .add-user {
         position: absolute;
         top: 20px;
         right: 20px;
-        i{
+
+        i {
           margin-right: 5px;
         }
       }

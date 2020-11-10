@@ -1,6 +1,7 @@
 import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
+
 const state = {
   token: getToken(),
   name: '',
@@ -13,31 +14,31 @@ const state = {
 
 const mutations = {
   SET_TOKEN: (state, token) => {
-    state.token = token;
+    state.token = token
   },
   // SET_INTRODUCTION: (state, introduction) => {
   //   state.introduction = introduction;
   //   sessionStorage.setItem('introduction', JSON.stringify(introduction));
   // },
   SET_NAME: (state, name) => {
-    state.name = name;
-    sessionStorage.setItem('name', JSON.stringify(name));
+    state.name = name
+    sessionStorage.setItem('name', JSON.stringify(name))
   },
   SET_AVATAR: (state, avatar) => {
-    state.avatar = avatar;
-    sessionStorage.setItem('avatar', JSON.stringify(avatar));
+    state.avatar = avatar
+    sessionStorage.setItem('avatar', JSON.stringify(avatar))
   },
   SET_ROLES: (state, roles) => {
-    state.roles = roles;
-    sessionStorage.setItem('roles', JSON.stringify(roles));
+    state.roles = roles
+    sessionStorage.setItem('roles', JSON.stringify(roles))
   },
   SET_USER_MASSAGE: (state, userMassage) => {
-    state.userMassage = userMassage;
-    sessionStorage.setItem('userMassage', JSON.stringify(userMassage));
+    state.userMassage = userMassage
+    sessionStorage.setItem('userMassage', JSON.stringify(userMassage))
   },
   SET_PROJECT_LIST: (state, projectList) => {
-    state.projectList = projectList;
-    sessionStorage.setItem('projectList', JSON.stringify(projectList));
+    state.projectList = projectList
+    sessionStorage.setItem('projectList', JSON.stringify(projectList))
   }
 }
 
@@ -47,7 +48,7 @@ const actions = {
     const { username, password, captcha } = userInfo
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password, captcha: captcha }).then(response => {
-        const { data } = response;
+        const { data } = response
         commit('SET_TOKEN', data.token)
         commit('SET_USER_MASSAGE', data.user)
         setToken(data.token)
@@ -68,7 +69,7 @@ const actions = {
           reject('Verification failed, please Login again.')
         }
 
-        const { userType, name, avatar, list } = data; // introduction
+        const { userType, name, avatar, list } = data // introduction
         // roles must be a non-empty array
         if (userType < 0 || userType > 3) {
           reject('getInfo: roles must be a non-null')
@@ -76,26 +77,26 @@ const actions = {
         let roles = ['admin']
         switch (userType) {
           case 0:
-            roles = ['admin'];
-            break;
+            roles = ['admin']
+            break
           case 1:
-            roles = ['editor'];
-            break;
+            roles = ['editor']
+            break
           case 2:
-            roles = ['cleaner'];
-            break;
+            roles = ['cleaner']
+            break
           case 3:
-            roles = ['repairman'];
-            break;
+            roles = ['repairman']
+            break
           default:
-            roles = ['admin'];
-            break;
+            roles = ['admin']
+            break
         }
         // roles must be a non-empty array
         if (!roles || roles.length <= 0) {
           reject('getInfo: roles must be a non-null array!')
         }
-        data.roles = roles;
+        data.roles = roles
         commit('SET_ROLES', roles)
         commit('SET_NAME', name)
         commit('SET_AVATAR', avatar)
@@ -111,15 +112,16 @@ const actions = {
   // user logout
   logout({ commit, state, dispatch }) {
     return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
+      const token = { token: state.token }
+      logout(token).then(() => {
         commit('SET_TOKEN', '')
         commit('SET_ROLES', [])
-        sessionStorage.removeItem('introduction');
-        sessionStorage.removeItem('name');
-        sessionStorage.removeItem('avatar');
-        sessionStorage.removeItem('roles');
-        sessionStorage.removeItem('projectList');
-        sessionStorage.removeItem('userMassage');
+        sessionStorage.removeItem('introduction')
+        sessionStorage.removeItem('name')
+        sessionStorage.removeItem('avatar')
+        sessionStorage.removeItem('roles')
+        sessionStorage.removeItem('projectList')
+        sessionStorage.removeItem('userMassage')
         removeToken()
         resetRouter()
 

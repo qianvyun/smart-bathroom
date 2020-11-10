@@ -23,9 +23,13 @@ export default {
       type: String,
       default: '25vh'
     },
-    chartData: {
-      type: Object,
-      // required: true
+    manData: {
+      type: Array,
+      required: true
+    },
+    womanData: {
+      type: Array,
+      required: true
     }
   },
   data() {
@@ -33,14 +37,32 @@ export default {
       chart: null,
       // x轴数据
       xAxisData: [],
-      // 氨气（男）
-      ammoniaMan: [16, 15, 22, 26, 34, 43, 28],
-      // 氨气（女）
-      ammoniaWoman: [11, 23, 15, 13, 18, 20, 24],
-      // 硫化氢（男）
-      hydrogenMan: [3, 9, 23, 16, 20, 22, 18],
-      // 硫化氢（女）
-      hydrogenWoman: [11, 13, 14, 17, 20, 24, 22]
+      // 异味（男）
+      manPeculiarSmell: this.manData,
+      // 异味（女）
+      womanPeculiarSmell: this.womanData
+      // // 氨气（男）
+      // ammoniaMan: [16, 15, 22, 26, 34, 43, 28],
+      // // 氨气（女）
+      // ammoniaWoman: [11, 23, 15, 13, 18, 20, 24],
+      // // 硫化氢（男）
+      // hydrogenMan: [3, 9, 23, 16, 20, 22, 18],
+      // // 硫化氢（女）
+      // hydrogenWoman: [11, 13, 14, 17, 20, 24, 22]
+    }
+  },
+  watch: {
+    manData(newVal, oldVal) {
+      this.manPeculiarSmell = newVal;
+      this.$nextTick(() => {
+        this.initChart()
+      })
+    },
+    womanData(newVal, oldVal) {
+      this.womanPeculiarSmell = newVal;
+      this.$nextTick(() => {
+        this.initChart()
+      })
     }
   },
   created() {
@@ -82,7 +104,7 @@ export default {
           trigger: 'axis',
           showContent: false
         },
-        color: [ '#e7a218', '#2cccdf'], // '#fff441', '#51ffb3',
+        color: ['#e7a218', '#2cccdf'], // '#fff441', '#51ffb3',
         legend: {
           right: '9%',
           top: '6%',
@@ -163,7 +185,7 @@ export default {
         ],
         series: [{
           name: '异味(男)',
-          data: this.ammoniaMan,
+          data: this.manPeculiarSmell,
           // data: warnCount,
           type: 'line',
           symbolSize: 5,
@@ -188,7 +210,7 @@ export default {
         },
         {
           name: '异味(女)',
-          data: this.hydrogenMan,
+          data: this.womanPeculiarSmell,
           // data: warnCount,
           type: 'line',
           symbolSize: 5,
