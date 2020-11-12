@@ -13,7 +13,7 @@
       </div>
       <ul class="state-details-list clear">
         <li v-for="item in stateList" :key="item.state" class="state-details-item">
-          <div class="icon-warp"><i class="icon" :class="iconClass"/></div>
+          <div class="icon-warp"><i class="icon iconfont" :class="iconClass" /></div>
           <p class="name">{{item.name}}</p>
         </li>
       </ul>
@@ -22,47 +22,47 @@
     <div class="bottom-warp" v-if="!isAccessibleToilet">
       <ul class="clear">
         <li class="weather">
-          <div class="icon-warp"><i class="icon icon-temperature" /></div>
+          <div class="icon-warp"><i class="icon iconfont icontemperature" /></div>
           <div class="describe">温度</div>
           <div class="current-weather">{{formatData(environmentalState.temperature)}}</div>
         </li>
         <li class="weather">
-          <div class="icon-warp"><i class="icon icon-hydrothion" /></div>
+          <div class="icon-warp"><i class="icon iconfont iconhydrothion" /></div>
           <div class="describe">硫化氢</div>
           <div class="current-weather">{{formatData(environmentalState.hydrogenSulfide)}}</div>
         </li>
         <li class="weather">
-          <div class="icon-warp"><i class="icon icon-ammonia" /></div>
+          <div class="icon-warp"><i class="icon iconfont iconammonia" /></div>
           <div class="describe">氨气</div>
           <div class="current-weather">{{formatData(environmentalState.ammonia)}}</div>
         </li>
         <li class="weather">
-          <div class="icon-warp"><i class="icon icon-primary-air-system" /></div>
+          <div class="icon-warp"><i class="icon iconfont iconprimary-air-system" /></div>
           <div class="describe">新风系统</div>
           <div class="current-weather">暂无</div>
         </li>
         <li class="weather">
-          <div class="icon-warp"><i class="icon icon-pm25" /></div>
+          <div class="icon-warp"><i class="icon iconfont iconpm25" /></div>
           <div class="describe">PM2.5</div>
           <div class="current-weather">{{formatData(environmentalState.pm25)}}</div>
         </li>
         <li class="weather">
-          <div class="icon-warp"><i class="icon icon-fumee help" /></div>
+          <div class="icon-warp"><i class="icon iconfont iconfumee help" /></div>
           <div class="describe">烟雾报警</div>
           <div class="current-weather">暂无</div>
         </li>
         <li class="weather">
-          <div class="icon-warp"><i class="icon icon-eclairage" /></div>
+          <div class="icon-warp"><i class="icon iconfont iconeclairage" /></div>
           <div class="describe">光照度</div>
           <div class="current-weather">暂无</div>
         </li>
         <li class="weather">
-          <div class="icon-warp"><i class="icon icon-pipeline" /></div>
+          <div class="icon-warp"><i class="icon iconfont iconpeculiar-smell" /></div>
           <div class="describe">异味</div>
           <div class="current-weather">{{formatData(environmentalState.peculiarSmell)}}</div>
         </li>
         <li class="weather">
-          <div class="icon-warp"><i class="icon icon-humidite" /></div>
+          <div class="icon-warp"><i class="icon iconfont iconhumidite" /></div>
           <div class="describe">湿度</div>
           <div class="current-weather">{{formatData(environmentalState.dampness)}}</div>
         </li>
@@ -103,13 +103,13 @@ export default {
       let iconC = ''
       switch (this.toiletType) {
         case 'woman':
-          iconC = 'icon-woman'
+          iconC = 'iconwoman'
           break
         case 'accessible':
-          iconC = 'icon-handicapees'
+          iconC = 'iconhandicapees'
           break
         default:
-          iconC = 'icon-man'
+          iconC = 'iconman'
           break
       }
       return iconC
@@ -256,7 +256,7 @@ export default {
             line-height: vh(64);
 
             .icon {
-              font-size: vw(60);
+              font-size: vw(48);
               color: $unoccupied;
 
               &.being {
@@ -342,7 +342,7 @@ export default {
           font-size: vw(14);
         }
 
-        &:nth-of-type(2), &:nth-of-type(3) {
+        /*&:nth-of-type(2), &:nth-of-type(3) {
           .icon-warp .icon {
             font-size: vw(40);
           }
@@ -352,7 +352,7 @@ export default {
           .icon-warp .icon {
             font-size: vw(28);
           }
-        }
+        }*/
       }
     }
   }

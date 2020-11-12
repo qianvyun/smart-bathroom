@@ -9,17 +9,17 @@
     <div class="left-toolbar">
       <ul class="clear">
         <li class="toolbar-item sidebar" :class="{'is-active':isActiveHamburger}" @click="toggleClick">
-          <i class="icon icon-hamburger" />
+          <i class="icon iconfont iconhamburger" />
         </li>
         <li class="toolbar-item alarm">
           <alarm-modal v-if="alarmData && !isHandleMapCoordinate" :visible="isShowAlarmModalVisible" :alarm-data="alarmData" @locationMassage="locationHandle" />
           <el-badge v-else :value="alarmNum" :max="99" class="item" style="width: 40px;height: 40px;">
-            <i class="icon icon-notice" style="font-size: 28px;" />
+            <i class="icon iconfont iconnotice" style="font-size: 28px;" />
           </el-badge>
         </li>
-        <li class="toolbar-item" @click="overviewClick"><i class="icon icon-overview" /></li>
-        <li class="toolbar-item add" :class="{'is-active':isHandleMapCoordinate}" @click="addBathroomClick"><i class="icon icon-add-to" /></li>
-        <li class="toolbar-item"><i class="icon icon-search" /></li>
+        <li class="toolbar-item" @click="overviewClick"><i class="icon iconfont iconoverview" /></li>
+        <li class="toolbar-item add" :class="{'is-active':isHandleMapCoordinate}" @click="addBathroomClick"><i class="icon iconfont iconadd-to" /></li>
+        <li class="toolbar-item"><i class="icon iconfont iconsearch" /></li>
       </ul>
     </div>
     <div class="right-toolbar">
@@ -27,7 +27,7 @@
         <li>
           <el-dropdown trigger="click" placement="bottom-start">
             <div class="right-toolbar-item address">
-              <i class="icon icon-location" />请选择<span class="arrow"><i class="icon icon-down" /></span>
+              <i class="icon iconfont iconlocation" />请选择<span class="arrow"><i class="icon iconfont icondown" /></span>
             </div>
             <el-dropdown-menu>
               <el-tree
@@ -41,7 +41,7 @@
             </el-dropdown-menu>
           </el-dropdown>
         </li>
-        <li><div class="right-toolbar-item full" @click="handleFullscreenClick"><i class="icon icon-full-screen" />全屏</div></li>
+        <li><div class="right-toolbar-item full" @click="handleFullscreenClick"><i class="icon iconfont iconfull-screen" />全屏</div></li>
       </ul>
     </div>
 
@@ -87,7 +87,7 @@ export default {
       // 显示告警信息
       isShowAlarmModalVisible: false,
       // 自定义图标
-      content: `<div style="font-size: 32px; color: #EA4335"><i class="icon icon-location"/></div>`,
+      content: `<div style="font-size: 32px; color: #EA4335"><i class="icon iconfont iconlocation" style="font-size: 22px" /></div>`,
       // 地图事件
       mapEvents: {
         // 初始化地图处理
@@ -531,7 +531,7 @@ export default {
             padding: 0 15px;
             text-align: left;
             z-index: 2300;
-            .icon-location{
+            .iconlocation{
               font-size: 14px;
               margin-right: 5px;
             }

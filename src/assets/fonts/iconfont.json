@@ -1,0 +1,576 @@
+{
+  "id": "2197893",
+  "name": "智慧厕所",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "10544917",
+      "name": "风",
+      "font_class": "weather-wind",
+      "unicode": "e610",
+      "unicode_decimal": 58896
+    },
+    {
+      "icon_id": "10156220",
+      "name": "日历",
+      "font_class": "calendar",
+      "unicode": "e646",
+      "unicode_decimal": 58950
+    },
+    {
+      "icon_id": "1186194",
+      "name": "星",
+      "font_class": "star",
+      "unicode": "e6b0",
+      "unicode_decimal": 59056
+    },
+    {
+      "icon_id": "18171137",
+      "name": "温度计",
+      "font_class": "temperature",
+      "unicode": "e661",
+      "unicode_decimal": 58977
+    },
+    {
+      "icon_id": "18171001",
+      "name": "除味",
+      "font_class": "peculiar-smell",
+      "unicode": "e611",
+      "unicode_decimal": 58897
+    },
+    {
+      "icon_id": "18171006",
+      "name": "烟雾报警器",
+      "font_class": "fumee",
+      "unicode": "e613",
+      "unicode_decimal": 58899
+    },
+    {
+      "icon_id": "18171007",
+      "name": "男厕所",
+      "font_class": "man",
+      "unicode": "e614",
+      "unicode_decimal": 58900
+    },
+    {
+      "icon_id": "18171008",
+      "name": "氨气",
+      "font_class": "ammonia",
+      "unicode": "e615",
+      "unicode_decimal": 58901
+    },
+    {
+      "icon_id": "18171009",
+      "name": "女厕所",
+      "font_class": "woman",
+      "unicode": "e616",
+      "unicode_decimal": 58902
+    },
+    {
+      "icon_id": "18171010",
+      "name": "电视 风扇等其他安装",
+      "font_class": "primary-air-system",
+      "unicode": "e617",
+      "unicode_decimal": 58903
+    },
+    {
+      "icon_id": "18171011",
+      "name": "残疾人",
+      "font_class": "handicapees",
+      "unicode": "e618",
+      "unicode_decimal": 58904
+    },
+    {
+      "icon_id": "18171012",
+      "name": "硫化氢",
+      "font_class": "hydrothion",
+      "unicode": "e619",
+      "unicode_decimal": 58905
+    },
+    {
+      "icon_id": "18171013",
+      "name": "天气-中雨",
+      "font_class": "weather-rain5",
+      "unicode": "e61a",
+      "unicode_decimal": 58906
+    },
+    {
+      "icon_id": "18171014",
+      "name": "天气-中雨转大雨",
+      "font_class": "weather-rain16",
+      "unicode": "e61b",
+      "unicode_decimal": 58907
+    },
+    {
+      "icon_id": "18171015",
+      "name": "灯泡",
+      "font_class": "eclairage",
+      "unicode": "e61c",
+      "unicode_decimal": 58908
+    },
+    {
+      "icon_id": "18171016",
+      "name": "天气-阵雨",
+      "font_class": "weather-rain1",
+      "unicode": "e61d",
+      "unicode_decimal": 58909
+    },
+    {
+      "icon_id": "18171017",
+      "name": "湿度",
+      "font_class": "humidite",
+      "unicode": "e61e",
+      "unicode_decimal": 58910
+    },
+    {
+      "icon_id": "18171018",
+      "name": "天气-雾霾",
+      "font_class": "weather-smog",
+      "unicode": "e61f",
+      "unicode_decimal": 58911
+    },
+    {
+      "icon_id": "18171019",
+      "name": "天气-扬沙",
+      "font_class": "weather-sand-storm2",
+      "unicode": "e620",
+      "unicode_decimal": 58912
+    },
+    {
+      "icon_id": "18171020",
+      "name": "天气-阵雪",
+      "font_class": "weather-snow2",
+      "unicode": "e621",
+      "unicode_decimal": 58913
+    },
+    {
+      "icon_id": "18171021",
+      "name": "管道",
+      "font_class": "pipeline",
+      "unicode": "e622",
+      "unicode_decimal": 58914
+    },
+    {
+      "icon_id": "18171022",
+      "name": "天气-小雪转中雪",
+      "font_class": "weather-snow7",
+      "unicode": "e623",
+      "unicode_decimal": 58915
+    },
+    {
+      "icon_id": "18171023",
+      "name": "天气-中雪转大雪",
+      "font_class": "weather-snow8",
+      "unicode": "e624",
+      "unicode_decimal": 58916
+    },
+    {
+      "icon_id": "18171024",
+      "name": "天气-沙尘暴",
+      "font_class": "weather-sand-storm3",
+      "unicode": "e625",
+      "unicode_decimal": 58917
+    },
+    {
+      "icon_id": "18171025",
+      "name": "天气-中雪",
+      "font_class": "weather-snow4",
+      "unicode": "e626",
+      "unicode_decimal": 58918
+    },
+    {
+      "icon_id": "18171026",
+      "name": "天气-雨夹雪",
+      "font_class": "weather-rain21",
+      "unicode": "e627",
+      "unicode_decimal": 58919
+    },
+    {
+      "icon_id": "18171027",
+      "name": "天气-特大沙尘暴",
+      "font_class": "weather-sand-storm4",
+      "unicode": "e628",
+      "unicode_decimal": 58920
+    },
+    {
+      "icon_id": "18171028",
+      "name": "天气-雾",
+      "font_class": "weather-fog",
+      "unicode": "e629",
+      "unicode_decimal": 58921
+    },
+    {
+      "icon_id": "18171029",
+      "name": "天气-浮尘",
+      "font_class": "weather-sand-storm1",
+      "unicode": "e62a",
+      "unicode_decimal": 58922
+    },
+    {
+      "icon_id": "18171030",
+      "name": "天气-特大暴雨",
+      "font_class": "weather-rain9",
+      "unicode": "e62b",
+      "unicode_decimal": 58923
+    },
+    {
+      "icon_id": "18171031",
+      "name": "天气-暴雪",
+      "font_class": "weather-snow6",
+      "unicode": "e62c",
+      "unicode_decimal": 58924
+    },
+    {
+      "icon_id": "18171032",
+      "name": "天气-未知天气",
+      "font_class": "weather-unknown",
+      "unicode": "e62d",
+      "unicode_decimal": 58925
+    },
+    {
+      "icon_id": "18171033",
+      "name": "天气-大雪",
+      "font_class": "weather-snow5",
+      "unicode": "e62e",
+      "unicode_decimal": 58926
+    },
+    {
+      "icon_id": "18171034",
+      "name": "天气-大雪转暴雪",
+      "font_class": "weather-snow9",
+      "unicode": "e62f",
+      "unicode_decimal": 58927
+    },
+    {
+      "icon_id": "18171035",
+      "name": "天气-雨",
+      "font_class": "weather-rain",
+      "unicode": "e630",
+      "unicode_decimal": 58928
+    },
+    {
+      "icon_id": "18171036",
+      "name": "天气-晴",
+      "font_class": "weather-sunshine",
+      "unicode": "e631",
+      "unicode_decimal": 58929
+    },
+    {
+      "icon_id": "18171037",
+      "name": "天气-雷阵雨",
+      "font_class": "weather-rain2",
+      "unicode": "e632",
+      "unicode_decimal": 58930
+    },
+    {
+      "icon_id": "18171039",
+      "name": "天气-小雪",
+      "font_class": "weather-snow3",
+      "unicode": "e634",
+      "unicode_decimal": 58932
+    },
+    {
+      "icon_id": "18171040",
+      "name": "天气-小雨",
+      "font_class": "weather-rain4",
+      "unicode": "e635",
+      "unicode_decimal": 58933
+    },
+    {
+      "icon_id": "18171041",
+      "name": "pm2.5",
+      "font_class": "pm25",
+      "unicode": "e636",
+      "unicode_decimal": 58934
+    },
+    {
+      "icon_id": "18171042",
+      "name": "天气-大雨转暴雨",
+      "font_class": "weather-rain17",
+      "unicode": "e637",
+      "unicode_decimal": 58935
+    },
+    {
+      "icon_id": "18171043",
+      "name": "天气-雪",
+      "font_class": "weather-snow",
+      "unicode": "e638",
+      "unicode_decimal": 58936
+    },
+    {
+      "icon_id": "18171044",
+      "name": "天气-阴",
+      "font_class": "weather-cloudy1",
+      "unicode": "e639",
+      "unicode_decimal": 58937
+    },
+    {
+      "icon_id": "18171045",
+      "name": "天气-多云",
+      "font_class": "weather-cloudy",
+      "unicode": "e63a",
+      "unicode_decimal": 58938
+    },
+    {
+      "icon_id": "18171046",
+      "name": "天气-雷雨冰雹",
+      "font_class": "weather-rain3",
+      "unicode": "e63b",
+      "unicode_decimal": 58939
+    },
+    {
+      "icon_id": "18171047",
+      "name": "天气-暴雨",
+      "font_class": "weather-rain7",
+      "unicode": "e63c",
+      "unicode_decimal": 58940
+    },
+    {
+      "icon_id": "18171048",
+      "name": "天气-大暴雨",
+      "font_class": "weather-rain8",
+      "unicode": "e63d",
+      "unicode_decimal": 58941
+    },
+    {
+      "icon_id": "18171049",
+      "name": "天气-大雨",
+      "font_class": "weather-rain6",
+      "unicode": "e63e",
+      "unicode_decimal": 58942
+    },
+    {
+      "icon_id": "18171050",
+      "name": "天气-冻雨",
+      "font_class": "weather-rain23",
+      "unicode": "e63f",
+      "unicode_decimal": 58943
+    },
+    {
+      "icon_id": "18171051",
+      "name": "天气-暴雨转大暴雨",
+      "font_class": "weather-rain18",
+      "unicode": "e640",
+      "unicode_decimal": 58944
+    },
+    {
+      "icon_id": "18171052",
+      "name": "天气-大暴雨转特大暴雨",
+      "font_class": "weather-rain19",
+      "unicode": "e641",
+      "unicode_decimal": 58945
+    },
+    {
+      "icon_id": "18171053",
+      "name": "导航收起",
+      "font_class": "hamburger",
+      "unicode": "e642",
+      "unicode_decimal": 58946
+    },
+    {
+      "icon_id": "18171054",
+      "name": "通知",
+      "font_class": "notice",
+      "unicode": "e643",
+      "unicode_decimal": 58947
+    },
+    {
+      "icon_id": "18171055",
+      "name": "向下",
+      "font_class": "down",
+      "unicode": "e644",
+      "unicode_decimal": 58948
+    },
+    {
+      "icon_id": "18171056",
+      "name": "图层1",
+      "font_class": "tuceng1",
+      "unicode": "e645",
+      "unicode_decimal": 58949
+    },
+    {
+      "icon_id": "18171058",
+      "name": "告警数据",
+      "font_class": "alarm",
+      "unicode": "e647",
+      "unicode_decimal": 58951
+    },
+    {
+      "icon_id": "18171059",
+      "name": "全屏",
+      "font_class": "full-screen",
+      "unicode": "e648",
+      "unicode_decimal": 58952
+    },
+    {
+      "icon_id": "18171060",
+      "name": "女",
+      "font_class": "girl",
+      "unicode": "e649",
+      "unicode_decimal": 58953
+    },
+    {
+      "icon_id": "18171061",
+      "name": "男",
+      "font_class": "boy",
+      "unicode": "e64a",
+      "unicode_decimal": 58954
+    },
+    {
+      "icon_id": "18171062",
+      "name": "添加",
+      "font_class": "add-to",
+      "unicode": "e64b",
+      "unicode_decimal": 58955
+    },
+    {
+      "icon_id": "18171063",
+      "name": "定位",
+      "font_class": "location",
+      "unicode": "e64c",
+      "unicode_decimal": 58956
+    },
+    {
+      "icon_id": "18171064",
+      "name": "下拉",
+      "font_class": "arrow",
+      "unicode": "e64d",
+      "unicode_decimal": 58957
+    },
+    {
+      "icon_id": "18171065",
+      "name": "正在处理",
+      "font_class": "processing",
+      "unicode": "e64e",
+      "unicode_decimal": 58958
+    },
+    {
+      "icon_id": "18171066",
+      "name": "后台总览",
+      "font_class": "houtaizonglan",
+      "unicode": "e64f",
+      "unicode_decimal": 58959
+    },
+    {
+      "icon_id": "18171067",
+      "name": "柱状图 图表",
+      "font_class": "bar",
+      "unicode": "e650",
+      "unicode_decimal": 58960
+    },
+    {
+      "icon_id": "18171068",
+      "name": "折线图",
+      "font_class": "line",
+      "unicode": "e651",
+      "unicode_decimal": 58961
+    },
+    {
+      "icon_id": "18171069",
+      "name": "KHCFDC_数据",
+      "font_class": "data",
+      "unicode": "e652",
+      "unicode_decimal": 58962
+    },
+    {
+      "icon_id": "18171070",
+      "name": "后台总览 (1)",
+      "font_class": "overview",
+      "unicode": "e653",
+      "unicode_decimal": 58963
+    },
+    {
+      "icon_id": "18171071",
+      "name": "文字输入",
+      "font_class": "word",
+      "unicode": "e654",
+      "unicode_decimal": 58964
+    },
+    {
+      "icon_id": "18171072",
+      "name": "权限",
+      "font_class": "jurisdiction",
+      "unicode": "e655",
+      "unicode_decimal": 58965
+    },
+    {
+      "icon_id": "18171073",
+      "name": "更多",
+      "font_class": "more",
+      "unicode": "e656",
+      "unicode_decimal": 58966
+    },
+    {
+      "icon_id": "18171074",
+      "name": "监控",
+      "font_class": "monitor",
+      "unicode": "e657",
+      "unicode_decimal": 58967
+    },
+    {
+      "icon_id": "18171075",
+      "name": "视频",
+      "font_class": "video",
+      "unicode": "e658",
+      "unicode_decimal": 58968
+    },
+    {
+      "icon_id": "18171076",
+      "name": "添加 加号 无边框",
+      "font_class": "add",
+      "unicode": "e659",
+      "unicode_decimal": 58969
+    },
+    {
+      "icon_id": "18171077",
+      "name": "饼图",
+      "font_class": "pie",
+      "unicode": "e65a",
+      "unicode_decimal": 58970
+    },
+    {
+      "icon_id": "18171078",
+      "name": "图片",
+      "font_class": "pic",
+      "unicode": "e65b",
+      "unicode_decimal": 58971
+    },
+    {
+      "icon_id": "18171079",
+      "name": "删除",
+      "font_class": "delete",
+      "unicode": "e65c",
+      "unicode_decimal": 58972
+    },
+    {
+      "icon_id": "18171080",
+      "name": "ico_数据查询与统计_保洁清洁明细",
+      "font_class": "clear-list",
+      "unicode": "e65d",
+      "unicode_decimal": 58973
+    },
+    {
+      "icon_id": "18171081",
+      "name": "搜索",
+      "font_class": "search",
+      "unicode": "e65e",
+      "unicode_decimal": 58974
+    },
+    {
+      "icon_id": "18171082",
+      "name": "7价格通道线",
+      "font_class": "passageway",
+      "unicode": "e65f",
+      "unicode_decimal": 58975
+    },
+    {
+      "icon_id": "18171083",
+      "name": "列表",
+      "font_class": "list",
+      "unicode": "e660",
+      "unicode_decimal": 58976
+    }
+  ]
+}

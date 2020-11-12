@@ -7,7 +7,7 @@
         <div class="avatar-wrapper">
           <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
           <span class="username">{{ name }}</span>
-          <i class="icon icon-arrow" />
+          <i class="icon iconfont iconarrow" />
         </div>
         <el-dropdown-menu slot="dropdown">
           <router-link to="/profile/index">
@@ -142,7 +142,7 @@ export default {
           margin-right: 5px;
         }
 
-        .icon-arrow {
+        .iconarrow {
           cursor: pointer;
           font-size: 28px;
           color: #7C88B1;

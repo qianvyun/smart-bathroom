@@ -9,7 +9,7 @@
       <el-col :span="21">
         <div class="data-update-content-warp">
           <div class="data-update-content-heard">
-            <div class="title"><i class="icon icon-data" />数据更新</div>
+            <div class="title"><i class="icon iconfont icondata" />数据更新</div>
           </div>
           <div class="data-update-item data-update-video">
             <div class="title">更新视频文件</div>
@@ -17,11 +17,11 @@
           </div>
           <div class="data-update-item data-update-image">
             <div class="title">更新图片文件</div>
-            <dropzone id="imageDropzone" default-icon="icon-pic" default-msg="导入图片" accepted-files="image/*" :url="url" @dropzone-removedFile="dropzoneR" @dropzone-success="dropzoneS" />
+            <dropzone id="imageDropzone" default-icon="iconpic" default-msg="导入图片" accepted-files="image/*" :url="url" @dropzone-removedFile="dropzoneR" @dropzone-success="dropzoneS" />
           </div>
           <div class="data-update-item data-update-word">
             <div class="title">更新文字新闻</div>
-            <dropzone id="wordDropzone" default-icon="icon-word" default-msg="导入文字信息" accepted-files="image/*" :url="url" @dropzone-removedFile="dropzoneR" @dropzone-success="dropzoneS" />
+            <dropzone id="wordDropzone" default-icon="iconword" default-msg="导入文字信息" accepted-files="image/*" :url="url" @dropzone-removedFile="dropzoneR" @dropzone-success="dropzoneS" />
           </div>
         </div>
       </el-col>

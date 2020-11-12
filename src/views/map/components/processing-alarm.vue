@@ -2,7 +2,7 @@
   <div class="processing-warp">
     <el-dialog :visible.sync="processingVisible" :destroy-on-close="true" @close="close" width="590px" top="20vh">
       <div slot="title" class="processing-title">
-        <i class="icon icon-alarm"></i>编号：<span>206</span>设备编号：<span>n00002</span>时间：<span>2020-2-4 13:12:12</span>
+        <i class="icon iconfont iconalarm"></i>编号：<span>206</span>设备编号：<span>n00002</span>时间：<span>2020-2-4 13:12:12</span>
       </div>
       <div class="processing-body">
         <!--<div class="form-item">

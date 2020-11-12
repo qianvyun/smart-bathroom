@@ -9,19 +9,19 @@
           <li>
             <div class="describe">卫生环境</div>
             <div class="stars">
-              <i class="icon icon-star" :class="{light:item}" v-for="item of stars.environmental"/>
+              <i class="icon iconfont iconstar" :class="{light:item}" v-for="item of stars.environmental"/>
             </div>
           </li>
           <li>
             <div class="describe">管路服务</div>
             <div class="stars">
-              <i class="icon icon-star" :class="{light:item}" v-for="item of stars.service"/>
+              <i class="icon iconfont iconstar" :class="{light:item}" v-for="item of stars.service"/>
             </div>
           </li>
           <li>
             <div class="describe">设施设备</div>
             <div class="stars">
-              <i class="icon icon-star" :class="{light:item}" v-for="item of stars.facilities"/>
+              <i class="icon iconfont iconstar" :class="{light:item}" v-for="item of stars.facilities"/>
             </div>
           </li>
         </ul>

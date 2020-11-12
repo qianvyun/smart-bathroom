@@ -2,9 +2,9 @@
   <div class="permission-container">
     <div class="permission-container-warp">
       <div class="permission-container-header">
-        <div class="title"><i class="icon icon-list"/>用户列表</div>
+        <div class="title"><i class="icon iconfont iconlist" />用户列表</div>
         <div class="add-user">
-          <el-button type="primary" @click="handleAddRole"><i class="icon icon-add"/>添加用户</el-button>
+          <el-button type="primary" @click="handleAddRole"><i class="icon iconfont iconadd"/>添加用户</el-button>
         </div>
       </div>
 
@@ -29,7 +29,7 @@
             <el-button size="small" type="primary" class="edit" @click="handleEdit(scope)">
               <i class="icon el-icon-edit" />编辑
             </el-button>
-            <el-button size="small" class="delete" @click="handleDelete(scope)"><i class="icon icon-delete"/>删除
+            <el-button size="small" class="delete" @click="handleDelete(scope)"><i class="icon iconfont icondelete"/>删除
             </el-button>
           </template>
         </el-table-column>
@@ -346,7 +346,6 @@ export default {
           display: inline-block;
           margin-top: -3px;
           margin-right: 10px;
-          font-size: 22px;
           color: #1E8BF8;
           line-height: 30px;
           vertical-align: middle;

@@ -8,7 +8,7 @@
   >
     <div class="close" @click="modalVisible = false"><i class="icon">×</i></div>
     <div class="alarm-modal-heard">
-      <i class="icon icon-alarm" />告警信息
+      <i class="icon iconfont iconalarm" />告警信息
     </div>
     <div class="alarm-table-warp">
       <el-table
@@ -48,8 +48,8 @@
         </template>
         <el-table-column label="操作" :resizable="false" align="center" class-name="process">
           <template slot-scope="scope">
-            <el-button type="primary" @click.native.prevent="locationHandle(scope.row)"><i class="icon icon-location" />定位</el-button>
-            <el-button type="danger" @click.native.prevent="deleteAlarm(scope.$index,scope.row)"><i class="icon icon-delete" />删除</el-button>
+            <el-button type="primary" @click.native.prevent="locationHandle(scope.row)"><i class="icon iconfont iconlocation" />定位</el-button>
+            <el-button type="danger" @click.native.prevent="deleteAlarm(scope.$index,scope.row)"><i class="icon iconfont icondelete" />删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -59,7 +59,7 @@
       <el-button type="primary" @click="modalVisible = false">确定</el-button>
     </div>
     <el-badge slot="reference" :value="alarmNum" :max="99" class="item">
-      <i class="icon icon-notice" />
+      <i class="icon iconfont iconnotice" />
     </el-badge>
   </el-popover>
 </template>
@@ -269,7 +269,7 @@ export default {
       color: #222A42;
       font-size: 14px;
       font-family: NotoSansCJKRegular;
-      .icon-alarm{
+      .iconalarm{
         color: #F69286;
         margin-right: 10px;
       }

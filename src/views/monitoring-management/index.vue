@@ -9,10 +9,10 @@
       <el-col :span="21">
         <div class="monitoring-management-content-warp">
           <div class="monitoring-management-content-heard">
-            <div class="title"><i class="icon icon-monitor" />监控管理</div>
+            <div class="title"><i class="icon iconfont iconmonitor" />监控管理</div>
             <div class="add-monitor">
               <el-button type="primary" :disabled="queryMonitorList.length===0" @click="handleAddMonitor">
-                <i class="icon icon-add" />添加监控
+                <i class="icon iconfont iconadd" />添加监控
               </el-button>
             </div>
           </div>
@@ -30,7 +30,7 @@
                     </object>
                     监控内容
                   </div>
-                  <span><i class="icon icon-delete" /></span><!--{{ monitor.deviceName }}-->
+                  <span><i class="icon iconfont icondelete" /></span><!--{{ monitor.deviceName }}-->
                 </li>
               </template>
             </ul>
@@ -153,7 +153,6 @@ export default {
           display: inline-block;
           margin-top: -3px;
           margin-right: 10px;
-          font-size: 22px;
           color: #1E8BF8;
           line-height: 30px;
           vertical-align: middle;

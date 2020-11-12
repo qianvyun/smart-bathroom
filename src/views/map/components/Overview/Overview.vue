@@ -19,7 +19,7 @@
           <div class="pie-chart-number">3000<span class="unit">人</span></div>
           <div class="pie-chart-title">使用总人数</div>
           <div class="pie-chart-massage">
-            <p><i class="icon icon-girl"></i>女性：2100人</p>
+            <p><i class="icon iconfont icongirl"></i>女性：2100人</p>
             <p>占比：85%</p>
           </div>
         </div>
@@ -139,18 +139,18 @@ export default {
       });
     },
     weatherClass() {
-      let weatherClass = 'icon-weather-unknown';
+      let weatherClass = 'iconweather-unknown';
       switch (this.weather) {
         case '晴':
-          weatherClass = 'icon-weather-sunshine';
+          weatherClass = 'iconweather-sunshine';
           break;
         case '少云':
         case '晴间多云':
         case '多云':
-          weatherClass = 'icon-weather-cloudy';
+          weatherClass = 'iconweather-cloudy';
           break;
         case '阴':
-          weatherClass = 'icon-weather-cloudy1';
+          weatherClass = 'iconweather-cloudy1';
           break;
         case '有风':
         case '平静':
@@ -166,109 +166,109 @@ export default {
         case '飓风':
         case '热带风暴':
         case '龙卷风':
-          weatherClass = 'icon-weather-wind'
+          weatherClass = 'iconweather-wind'
           break
         case '霾':
         case '中度霾':
         case '重度霾':
         case '严重霾':
-          weatherClass = 'icon-weather-smog';
+          weatherClass = 'iconweather-smog';
           break;
         case '阵雨':
         case '强阵雨':
-          weatherClass = 'icon-weather-rain1';
+          weatherClass = 'iconweather-rain1';
           break;
         case '雷阵雨':
         case '强雷阵雨':
-          weatherClass = 'icon-weather-rain2';
+          weatherClass = 'iconweather-rain2';
           break;
         case '雷阵雨并伴有冰雹':
-          weatherClass = 'icon-weather-rain3';
+          weatherClass = 'iconweather-rain3';
           break;
         case '小雨':
         case '毛毛雨/细雨':
-          weatherClass = 'icon-weather-rain4';
+          weatherClass = 'iconweather-rain4';
           break;
         case '中雨':
-          weatherClass = 'icon-weather-rain5';
+          weatherClass = 'iconweather-rain5';
           break;
         case '大雨':
-          weatherClass = 'icon-weather-rain6';
+          weatherClass = 'iconweather-rain6';
           break;
         case '暴雨':
-          weatherClass = 'icon-weather-rain7';
+          weatherClass = 'iconweather-rain7';
           break;
         case '大暴雨':
-          weatherClass = 'icon-weather-rain8';
+          weatherClass = 'iconweather-rain8';
           break;
         case '特大暴雨':
         case '极端降雨':
-          weatherClass = 'icon-weather-rain9';
+          weatherClass = 'iconweather-rain9';
           break;
         case '雨':
-          weatherClass = 'icon-weather-rain';
+          weatherClass = 'iconweather-rain';
           break;
         case '小雨-中雨':
-          weatherClass = 'icon-weather-rain15';
-          break;
+          // weatherClass = 'iconweather-rain15';
+          // break;
         case '中雨-大雨':
-          weatherClass = 'icon-weather-rain16';
+          weatherClass = 'iconweather-rain16';
           break;
         case '大雨-暴雨':
-          weatherClass = 'icon-weather-rain17';
+          weatherClass = 'iconweather-rain17';
           break;
         case '暴雨-大暴雨':
-          weatherClass = 'icon-weather-rain18';
+          weatherClass = 'iconweather-rain18';
           break;
         case '大暴雨-特大暴雨':
-          weatherClass = 'icon-weather-rain19';
+          weatherClass = 'iconweather-rain19';
           break;
         case '雨雪天气':
         case '雨夹雪':
         case '阵雨夹雪':
-          weatherClass = 'icon-weather-rain21';
+          weatherClass = 'iconweather-rain21';
           break;
         case '冻雨':
-          weatherClass = 'icon-weather-rain23';
+          weatherClass = 'iconweather-rain23';
           break;
         case '雪':
-          weatherClass = 'icon-weather-snow';
+          weatherClass = 'iconweather-snow';
           break;
         case '阵雪':
-          weatherClass = 'icon-weather-snow2';
+          weatherClass = 'iconweather-snow2';
           break;
         case '小雪':
-          weatherClass = 'icon-weather-snow3';
+          weatherClass = 'iconweather-snow3';
           break;
         case '中雪':
-          weatherClass = 'icon-weather-snow4';
+          weatherClass = 'iconweather-snow4';
           break;
         case '大雪':
-          weatherClass = 'icon-weather-snow5';
+          weatherClass = 'iconweather-snow5';
           break;
         case '暴雪':
-          weatherClass = 'icon-weather-snow6';
+          weatherClass = 'iconweather-snow6';
           break;
         case '小雪-中雪':
-          weatherClass = 'icon-weather-snow7';
+          weatherClass = 'iconweather-snow7';
           break;
         case '中雪-大雪':
-          weatherClass = 'icon-weather-snow8';
+          weatherClass = 'iconweather-snow8';
           break;
         case '大雪-暴雪':
-          weatherClass = 'icon-weather-snow9';
+          weatherClass = 'iconweather-snow9';
           break;
         case '浮尘':
-          weatherClass = 'icon-weather-sand-storm1';
+          weatherClass = 'iconweather-sand-storm1';
           break;
         case '扬沙':
-          weatherClass = 'icon-weather-sand-storm2';
+          weatherClass = 'iconweather-sand-storm2';
           break;
         case '沙尘暴':
-          weatherClass = 'icon-weather-sand-storm3';
+          weatherClass = 'iconweather-sand-storm3';
           break;
         case '强沙尘暴':
-          weatherClass = 'icon-weather-sand-storm4';
+          weatherClass = 'iconweather-sand-storm4';
           break;
         case '雾':
         case '浓雾':
@@ -276,10 +276,10 @@ export default {
         case '轻雾':
         case '大雾':
         case '特强浓雾':
-          weatherClass = 'icon-weather-fog';
+          weatherClass = 'iconweather-fog';
           break;
         default:
-          weatherClass = 'icon-weather-unknown';
+          weatherClass = 'iconweather-unknown';
           break;
       }
       this.weatherIcon = weatherClass;

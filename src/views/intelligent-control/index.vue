@@ -9,7 +9,7 @@
       <el-col :span="21">
         <div class="intelligent-control-content-warp">
           <div class="intelligent-control-content-heard">
-            <div class="title"><i class="icon icon-passageway" />通道管理</div>
+            <div class="title"><i class="icon iconfont iconpassageway" />通道管理</div>
           </div>
           <template v-for="passageway of passagewayList">
             <div :key="passageway.id" class="intelligent-control-item">

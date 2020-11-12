@@ -12,7 +12,7 @@
             <el-col :span="15">
               <div class="project-content report-traffic">
                 <div class="project-content-heard clear">
-                  <div class="title"><i class="icon icon-line" />人流量</div>
+                  <div class="title"><i class="icon iconfont iconline" />人流量</div>
                   <div class="project-content-granularity">
                     <time-granularity-select @granularity="getTrafficReport" />
                   </div>
@@ -25,7 +25,7 @@
             <el-col :span="9">
               <div class="project-content report-statistic">
                 <div class="project-content-heard clear">
-                  <div class="title"><i class="icon icon-pie" />评价统计</div>
+                  <div class="title"><i class="icon iconfont iconpie" />评价统计</div>
                   <div class="project-content-granularity">
                     <time-granularity-select @granularity="getStatisticReport" />
                   </div>
@@ -38,7 +38,7 @@
           </el-row>
           <div class="project-content report-device">
             <div class="project-content-heard clear">
-              <div class="title"><i class="icon icon-bar" />设备良好率</div>
+              <div class="title"><i class="icon iconfont iconbar" />设备良好率</div>
               <div class="project-content-granularity">
                 <time-granularity-select @granularity="getDeviceReport" />
               </div>
@@ -132,13 +132,13 @@ export default {
               font-size: 18px;
               margin-top: -2px;
               vertical-align: middle;
-              &.icon-line{
+              &.iconline{
                 color: #E14ECA;
               }
-              &.icon-pie{
+              &.iconpie{
                 color: #1D8CF8;
               }
-              &.icon-bar{
+              &.iconbar{
                 color: #FF8D72;
               }
             }

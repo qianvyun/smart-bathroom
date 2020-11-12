@@ -32,7 +32,7 @@ export default {
     },
     defaultIcon: {
       type: String,
-      default: 'icon-video'
+      default: 'iconvideo'
     },
     acceptedFiles: {
       type: String,
@@ -105,7 +105,7 @@ export default {
       addRemoveLinks: this.showRemoveLink,
       acceptedFiles: this.acceptedFiles,
       autoProcessQueue: this.autoProcessQueue,
-      dictDefaultMessage: `<div class="dropzone-default"><span class="default-msg">${this.defaultMsg}</span><span class="icon-warp"><i class="icon icon-add"></i> <i class="icon ${this.defaultIcon}"></i></span></div>`,
+      dictDefaultMessage: `<div class="dropzone-default"><span class="default-msg">${this.defaultMsg}</span><span class="icon-warp"><i class="icon iconfont iconadd"></i> <i class="icon iconfont ${this.defaultIcon}"></i></span></div>`,
       dictMaxFilesExceeded: '只能一个图',
       previewTemplate: `<div class="dz-preview dz-file-preview">
                           <div class="dz-image" style="width:${this.thumbnailWidth}px;height:${this.thumbnailHeight}px" >

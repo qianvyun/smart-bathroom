@@ -9,7 +9,7 @@
       <el-col :span="21">
         <div class="daily-cleaning-container-warp">
           <div class="daily-cleaning-container-header">
-            <div class="title"><i class="icon icon-clear-list" />保洁员列表</div>
+            <div class="title"><i class="icon iconfont iconclear-list" />保洁员列表</div>
             <!--<div class="add-user">
               <el-button type="primary" @click="handleAddCleaner"><i class="icon icon-add" />添加保洁员</el-button>
             </div>-->
@@ -240,7 +240,6 @@ export default {
           display: inline-block;
           margin-top: -3px;
           margin-right: 10px;
-          font-size: 22px;
           color: #1E8BF8;
           line-height: 30px;
           vertical-align: middle;
