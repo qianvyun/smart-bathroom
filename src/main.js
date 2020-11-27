@@ -18,8 +18,10 @@ import router from './router'
 import './permission' // permission control
 import './utils/error-log' // error log
 
-import vueAMap from 'vue-amap'
+import AMap from 'vue-amap'
 
+import VideoPlayer from 'vue-video-player'
+Vue.use(VideoPlayer)
 import * as filters from './filters' // global filters
 
 /**
@@ -38,8 +40,8 @@ if (process.env.NODE_ENV === 'production') {
 Vue.use(Element, {
   size: Cookies.get('size') || 'medium' // set element-ui default size
 })
-Vue.use(vueAMap)
-vueAMap.initAMapApiLoader({
+Vue.use(AMap)
+AMap.initAMapApiLoader({
   key: '0094f82944881df89973191c0582a9e8',
   plugin: ['AMap.Autocomplete', // 输入提示插件
     'AMap.PlaceSearch', // POI搜索插件

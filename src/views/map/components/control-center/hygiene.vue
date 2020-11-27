@@ -9,19 +9,19 @@
           <li>
             <div class="describe">卫生环境</div>
             <div class="stars">
-              <i class="icon iconfont iconstar" :class="{light:item}" v-for="item of stars.environmental"/>
+              <i v-for="(item,index) of stars.environmental" :key="index" class="icon iconfont iconstar" :class="{light:item}" />
             </div>
           </li>
           <li>
             <div class="describe">管路服务</div>
             <div class="stars">
-              <i class="icon iconfont iconstar" :class="{light:item}" v-for="item of stars.service"/>
+              <i v-for="(item,index) of stars.service" :key="index+'a'" class="icon iconfont iconstar" :class="{light:item}" />
             </div>
           </li>
           <li>
             <div class="describe">设施设备</div>
             <div class="stars">
-              <i class="icon iconfont iconstar" :class="{light:item}" v-for="item of stars.facilities"/>
+              <i v-for="(item,index) of stars.facilities" :key="index+'b'" class="icon iconfont iconstar" :class="{light:item}" />
             </div>
           </li>
         </ul>
@@ -45,6 +45,7 @@ export default {
   props: {
     hygieneData: {
       type: Object,
+      default: () => {}
       // required: true
     }
   },

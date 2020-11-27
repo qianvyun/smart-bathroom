@@ -22,3 +22,11 @@ export function logout(data) {
     data
   })
 }
+
+export function toiletList(data) {
+  return request({
+    url: '/toilet/selectlist',
+    method: 'post',
+    data
+  })
+}

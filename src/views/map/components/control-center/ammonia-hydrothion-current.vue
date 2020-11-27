@@ -231,54 +231,6 @@ export default {
           lineStyle: {
             width: 4
           }
-        /*},
-        {
-          name: '氨气(女)',
-          data: this.ammoniaWoman,
-          // data: warnCount,
-          type: 'line',
-          symbolSize: 5,
-          showSymbol: false,
-          smooth: true,
-          label: {
-            show: true,
-            color: '#9bebf2',
-            fontFamily: 'NotoSansCJKRegular',
-            fontSize: 10
-          },
-          itemStyle: {
-            borderColor: 'rgba(255,255,255,0.5)',
-            borderWidth: 3,
-            shadowBlur: 8,
-            shadowColor: 'rgba(255,255,255,1)'
-          },
-          lineStyle: {
-            width: 4
-          }
-        },
-        {
-          name: '硫化氢(女)',
-          data: this.hydrogenWoman,
-          // data: warnCount,
-          type: 'line',
-          symbolSize: 5,
-          showSymbol: false,
-          smooth: true,
-          label: {
-            show: true,
-            color: '#9bebf2',
-            fontFamily: 'NotoSansCJKRegular',
-            fontSize: 10
-          },
-          itemStyle: {
-            borderColor: 'rgba(255,255,255,0.5)',
-            borderWidth: 3,
-            shadowBlur: 8,
-            shadowColor: 'rgba(255,255,255,1)'
-          },
-          lineStyle: {
-            width: 4
-          }*/
         }]
       })
     }

@@ -54,8 +54,8 @@
           autocomplete="off"
           style="float: left; width: 180px;"
         />
-        <div class="captcha_code"><img :src="captchaUrl" ref="code" @click="changeCode"></div>
-<!--        <img src="http://101.132.193.151:8887/kdzn/toilet/getcaptcha"/>-->
+        <div class="captcha_code"><img ref="code" :src="captchaUrl" @click="changeCode"></div>
+        <!--<img src="http://101.132.193.151:8887/kdzn/toilet/getcaptcha"/>-->
       </el-form-item>
 
       <el-form-item prop="rememberPassword ">
@@ -188,7 +188,7 @@ export default {
       });
     },
     changeCode() {
-      let captchaKey = Math.random().toString(36).substring(2);
+      const captchaKey = Math.random().toString(36).substring(2);
       this.captchaUrl = `http://101.132.193.151:8887/kdzn/toilet/getcaptcha??code=${captchaKey}`;
     },
     handleLogin() {

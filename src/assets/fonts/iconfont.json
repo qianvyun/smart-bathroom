@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "18364470",
+      "name": "减",
+      "font_class": "reduce",
+      "unicode": "e6b1",
+      "unicode_decimal": 59057
+    },
+    {
       "icon_id": "10544917",
       "name": "风",
       "font_class": "weather-wind",

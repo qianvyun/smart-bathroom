@@ -24,9 +24,33 @@ export function addToilet(data) {
   })
 }
 
+export function deleteToilet(data) {
+  return request({
+    url: '/toilet/del',
+    method: 'post',
+    data
+  })
+}
+
 export function getToiletDetails(data) {
   return request({
     url: '/toiletreport/getreport',
+    method: 'post',
+    data
+  })
+}
+
+export function getToiletInfo(data) {
+  return request({
+    url: '/toilet/info',
+    method: 'post',
+    data
+  })
+}
+
+export function getPersonDataByMonth(data) {
+  return request({
+    url: '/toiletreport/getPersonDataByMonth',
     method: 'post',
     data
   })

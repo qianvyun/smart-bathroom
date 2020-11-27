@@ -4,10 +4,10 @@
       <div class="overview-item-warp">
         <div class="overview-item-title">当前项目名称</div>
         <div class="overview-item-content pie-chart-warp toilets">
-          <total-toilets/>
+          <total-toilets />
           <div class="pie-chart-number">300<span class="unit">个</span></div>
           <div class="pie-chart-title">厕所总数</div>
-          <div class="total-toilets-table-warp"><total-toilets-table/></div>
+          <div class="total-toilets-table-warp"><total-toilets-table /></div>
         </div>
       </div>
     </el-tab-pane>
@@ -19,7 +19,7 @@
           <div class="pie-chart-number">3000<span class="unit">人</span></div>
           <div class="pie-chart-title">使用总人数</div>
           <div class="pie-chart-massage">
-            <p><i class="icon iconfont icongirl"></i>女性：2100人</p>
+            <p><i class="icon iconfont icongirl" />女性：2100人</p>
             <p>占比：85%</p>
           </div>
         </div>
@@ -54,7 +54,7 @@
         <div class="overview-item-title">当前项目名称</div>
         <div class="overview-item-content weather">
           <div class="weather-warp">
-            <i class="icon" :class="weatherIcon"></i>
+            <i class="icon iconfont" :class="weatherIcon" />
             <p>{{ weather }}</p>
           </div>
           <p class="current-time">{{ reportTime }}</p>
@@ -67,19 +67,20 @@
 
 <script>
 import PieChart from './pie-chart'
+import AMap from 'vue-amap';
 import { lazyAMapApiLoaderInstance } from 'vue-amap';
 import TotalToilets from '@/views/map/components/Overview/total-toilets'
 import TotalToiletsTable from '@/views/map/components/Overview/total-toilets-table'
 
 export default {
   name: 'Overview',
+  components: { TotalToiletsTable, TotalToilets, PieChart },
   props: {
     city: {
       type: Array,
       required: true
     }
   },
-  components: { TotalToiletsTable, TotalToilets, PieChart },
   data() {
     return {
       weatherData: '',
@@ -101,7 +102,6 @@ export default {
      * 根据地图中心坐标获取当前城市
      */
     getCurrentCity(center) {
-      console.log(center)
       AMap.service('AMap.Geocoder', () => { // 回调函数
         const geocoder = new AMap.Geocoder({});
         geocoder.getAddress(center, (status, result) => {
@@ -118,17 +118,16 @@ export default {
      * 根据城市获取当前的天气
      */
     getCurrentWeather(city) {
-      let $this = this;
+      const $this = this;
       AMap.plugin('AMap.Weather', function() {
         // 创建天气查询实例
         const weather = new AMap.Weather();
         // 执行实时天气信息查询
-        weather.getLive(city, function(err, data){
+        weather.getLive(city, function(err, data) {
           if (err) {
             console.error(err)
           } else {
             if (data) {
-              console.log(data)
               $this.weatherData = data;
               $this.weather = data.weather;
               $this.reportTime = data.reportTime;
@@ -209,8 +208,6 @@ export default {
           weatherClass = 'iconweather-rain';
           break;
         case '小雨-中雨':
-          // weatherClass = 'iconweather-rain15';
-          // break;
         case '中雨-大雨':
           weatherClass = 'iconweather-rain16';
           break;

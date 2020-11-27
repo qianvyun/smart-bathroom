@@ -5,17 +5,17 @@
     border
     header-cell-class-name="alarm-table-heard"
     cell-class-name="alarm-table-cell"
-    style="width: 100%">
-    <template
-      v-for="col of defaultCol">
+    style="width: 100%"
+  >
+    <template v-for="col of defaultCol">
       <el-table-column
+        :key="col.porp"
         :prop="col.porp"
         :label="col.lable"
         :width="col.width"
-        :key="col.porp"
         :resizable="false"
-        align="center">
-      </el-table-column>
+        align="center"
+      />
     </template>
   </el-table>
 </template>

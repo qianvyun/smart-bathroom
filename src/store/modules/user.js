@@ -1,4 +1,4 @@
-import { login, logout, getInfo } from '@/api/user'
+import { login, logout, getInfo, toiletList } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
@@ -102,6 +102,25 @@ const actions = {
         commit('SET_AVATAR', avatar)
         commit('SET_PROJECT_LIST', list)
         // commit('SET_INTRODUCTION', introduction)
+        resolve(data)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+
+  // get user info
+  getProjectList({ commit, state }) {
+    return new Promise((resolve, reject) => {
+      toiletList().then(response => {
+        const { data } = response
+
+        if (!data) {
+          reject('没有厕所信息.')
+        }
+
+        commit('SET_PROJECT_LIST', data)
+
         resolve(data)
       }).catch(error => {
         reject(error)

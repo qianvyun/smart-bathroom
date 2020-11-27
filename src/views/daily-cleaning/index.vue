@@ -31,7 +31,7 @@
             </el-table-column>
             <el-table-column label="照片" width="150px" align="center">
               <template slot-scope="{row}">
-                <img :src="row.avatar" />
+                <img :src="row.avatar">
               </template>
             </el-table-column>
             <el-table-column label="时间" width="150px" align="center">
@@ -153,9 +153,7 @@ export default {
         limit: this.listQuery.limit
       }
       const res = await getDaily(requestData);
-      console.log(res)
       this.dailyList = res.data;
-      console.log(this.dailyList)
       this.total = res.data.totalCount;
     },
     handleAddCleaner() {

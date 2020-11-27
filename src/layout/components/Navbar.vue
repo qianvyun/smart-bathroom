@@ -78,7 +78,6 @@ export default {
     }
   }
 
-
   .header-search{
     float: left;
     margin-top: 23px;

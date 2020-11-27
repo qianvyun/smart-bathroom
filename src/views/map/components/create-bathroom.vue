@@ -7,10 +7,13 @@
       <el-form-item label="厕所名称：">
         <el-input v-model="createBathroom.placeName" placeholder="厕所名称" />
       </el-form-item>
-      <el-form-item label="男厕马桶总数：">
+      <el-form-item label="厕所标识码：">
+        <el-input v-model="createBathroom.harewareId" placeholder="女厕所马桶数量" />
+      </el-form-item>
+      <el-form-item label="男厕坑位总数：">
         <el-input v-model="createBathroom.manToiletCount" placeholder="男厕所马桶数量" />
       </el-form-item>
-      <el-form-item label="女厕马桶总数：">
+      <el-form-item label="女厕坑位总数：">
         <el-input v-model="createBathroom.womanToiletCount" placeholder="女厕所马桶数量" />
       </el-form-item>
     </el-form>
@@ -29,7 +32,8 @@ const defaultBathroomMassage = {
   place: '',
   placeName: '',
   manToiletCount: '',
-  womanToiletCount: ''
+  womanToiletCount: '',
+  harewareId: ''
 }
 export default {
   name: 'CreateBathroom',
@@ -66,9 +70,9 @@ export default {
   },
   methods: {
     async confirmBathroom() {
-      await addToilet(this.createBathroom)
-      await store.dispatch('user/getInfo')
-      this.dialogVisible = false
+      await addToilet(this.createBathroom);
+      await store.dispatch('user/getProjectList');
+      this.dialogVisible = false;
       this.$emit('close-create-model', false)
       this.$notify({
         title: 'Success',

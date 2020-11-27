@@ -7,20 +7,20 @@
     <div class="control-center-body">
       <div class="control-center-left">
         <div class="chart-warp">
-          <div class="chart-box-top"><span/></div>
+          <div class="chart-box-top"><span /></div>
           <div class="chart-box-main">
-            <toilet-usage :chart-data="toiletUsageData"/>
+            <toilet-usage :chart-data="toiletUsageData" />
           </div>
         </div>
         <div class="chart-warp">
-          <div class="chart-box-top"><span/></div>
+          <div class="chart-box-top"><span /></div>
           <div class="chart-box-main">
-            <human :chart-data="humanData"/>
+            <human :chart-data="humanData" />
           </div>
         </div>
         <div class="chart-warp">
-          <div class="chart-box-top"><span/></div>
-          <hygiene/>
+          <div class="chart-box-top"><span /></div>
+          <hygiene />
         </div>
       </div>
       <div class="control-center-middle">
@@ -29,51 +29,51 @@
             <li class="clear">
               <div class="current">
                 <h5>今日入厕人数</h5>
-                <p>{{personSum}}<span>人</span></p>
+                <p>{{ personSum }}<span>人</span></p>
               </div>
               <div class="history">
                 <h5>昨日入厕人数</h5>
-                <p>{{oldPersonSum}}</p>
+                <p>{{ oldPersonSum }}</p>
               </div>
             </li>
             <li class="clear">
               <div class="current">
                 <h5>本月总服务人数</h5>
-                <p>{{monthPersonSum}}<span>人</span></p>
+                <p>{{ monthPersonSum }}<span>人</span></p>
               </div>
               <div class="history">
                 <h5>上月总服务人数</h5>
-                <p>{{oldMonthPersonSum}}</p>
+                <p>{{ oldMonthPersonSum }}</p>
               </div>
             </li>
             <li class="clear">
               <div class="current">
                 <h5>当前坑位利用率</h5>
-                <p>{{currentAvailability}}<span>%</span></p>
+                <p>{{ currentAvailability }}<span>%</span></p>
               </div>
               <div class="history">
                 <h5>昨日利用率</h5>
-                <p>{{oldAvailability}}%</p>
+                <p>{{ oldAvailability }}%</p>
               </div>
             </li>
           </ul>
         </div>
         <div class="state-warp">
-          <toilet-state toilet-type="man" :closestool-count="manClosestoolCount" :detail="manTolietDetail" />
-          <toilet-state toilet-type="woman" :closestool-count="womanClosestoolCount" :detail="womanTolietDetail" />
+          <toilet-state toilet-type="man" :closestool-count="manClosestoolCount" :detail="manTolietDetail" :available-closestool-count="manavailableClosestoolCount" />
+          <toilet-state toilet-type="woman" :closestool-count="womanClosestoolCount" :detail="womanTolietDetail" :available-closestool-count="womanavailableClosestoolCount" />
         </div>
       </div>
       <div class="control-center-right">
-        <toilet-state :is-accessible-toilet="true" toilet-type="accessible" :closestool-count="otherClosestoolCount" />
+        <toilet-state :is-accessible-toilet="true" toilet-type="accessible" :closestool-count="otherClosestoolCount" :available-closestool-count="otheravailableClosestoolCount" />
         <div class="chart-warp">
           <div class="chart-box-top"><span /></div>
           <div class="chart-box-main">
-            <ammonia-hydrothion-current :man-data="manPeculiarSmellData" :woman-data="womanPeculiarSmellData"/>
+            <ammonia-hydrothion-current :man-data="manPeculiarSmellData" :woman-data="womanPeculiarSmellData" />
           </div>
         </div>
         <div class="chart-warp">
           <div class="chart-box-top"><span /></div>
-          <monitor />
+          <monitor :url="monitorUrl" />
         </div>
       </div>
     </div>
@@ -87,7 +87,16 @@ import AmmoniaHydrothionCurrent from './ammonia-hydrothion-current'
 import Human from './human'
 import Monitor from './monitor'
 import Hygiene from './hygiene'
+import { getToiletDetails, getToiletInfo, getPersonDataByMonth } from '@/api/map'
 
+const defaultDetail = {
+  ammonia: '',
+  dampness: '',
+  hydrogenSulfide: '',
+  peculiarSmell: '',
+  pm25: '',
+  temperature: ''
+}
 export default {
   name: 'ControlCenter',
   components: {
@@ -110,6 +119,7 @@ export default {
   },
   data() {
     return {
+      toiletDetailMsg: this.toiletDetails,
       chartWidth: '',
       chartHeight: '',
       currentToiletName: this.toiletName,
@@ -137,12 +147,20 @@ export default {
       womanClosestoolCount: 0,
       // 无障碍
       otherClosestoolCount: 1,
+      womanavailableClosestoolCount: 0,
+      manavailableClosestoolCount: 0,
+      otheravailableClosestoolCount: 0,
       // 男厕坑位
       manTolietDetail: {},
       womanTolietDetail: {},
       // 异味数据
       manPeculiarSmellData: [],
-      womanPeculiarSmellData: []
+      womanPeculiarSmellData: [],
+      manToiletMsg: [],
+      womanToiletMsg: [],
+      otherToiletMsg: [],
+      monitorUrl: '',
+      timer: ''
     }
   },
   computed: {
@@ -158,41 +176,157 @@ export default {
     // }
   },
   created() {
-    console.log(this.toiletDetails)
-    // 获取男女适用比例
-    this.toiletUsageData.woman = this.toiletDetails.femalePersonSum
-    this.toiletUsageData.man = this.toiletDetails.malePersonSum
-    // 计算人流量数据
-    this.toiletDetails.femalePersonSumDetail.forEach((item, index) => {
-      this.humanData.push(Number(item) + Number(this.toiletDetails.malePersonSumDetail[index]));
-    })
-    if (this.toiletDetails.femaleClosestoolCount) {
-      this.womanClosestoolCount = this.toiletDetails.femaleClosestoolCount;
-    }
-    if (this.toiletDetails.maleClosestoolCount) {
-      this.manClosestoolCount = this.toiletDetails.maleClosestoolCount;
-    }
-    if (this.toiletDetails.detailRemark1 && this.toiletDetails.detailRemark1.length > 0) {
-      this.manTolietDetail = this.toiletDetails.detailRemark1[0];
-      this.formatPeculiarSmellData(this.manPeculiarSmellData, this.manTolietDetail);
-    }
-    if (this.toiletDetails.detailRemark2 && this.toiletDetails.detailRemark2.length > 0) {
-      this.womanTolietDetail = this.toiletDetails.detailRemark2[0];
-      this.formatPeculiarSmellData(this.womanPeculiarSmellData, this.womanTolietDetail);
-    }
+    this.getToiletInfo(this.toiletDetailMsg.toiletId);
+    this.getPersonDataByMonth(this.toiletDetailMsg.toiletId);
+    this.init();
+  },
+  mounted() {
+    this.timer = setInterval(() => {
+      this.getToiletDetails(this.toiletDetailMsg.toiletId);
+      this.init();
+    }, 10000)
+    this.$emit('close', this.timer)
   },
   methods: {
+    init() {
+      // 获取男女适用比例
+      this.toiletUsageData.woman = this.toiletDetailMsg.femalePersonSum;
+      this.toiletUsageData.man = this.toiletDetailMsg.malePersonSum;
+      // 今日人流量
+      this.personSum = this.toiletDetailMsg.personSum || 0;
+      this.oldPersonSum = this.toiletDetailMsg.personSumYesterday || 0;
+      // 计算人流量数据
+      this.toiletDetailMsg.femalePersonSumDetail.forEach((item, index) => {
+        this.humanData.unshift(Number(item) + Number(this.toiletDetailMsg.malePersonSumDetail[index]))
+      })
+      if (this.toiletDetailMsg.femaleClosestoolCount) {
+        this.womanClosestoolCount = this.toiletDetailMsg.femaleClosestoolCount
+      }
+      if (this.toiletDetailMsg.maleClosestoolCount) {
+        this.manClosestoolCount = this.toiletDetailMsg.maleClosestoolCount
+      }
+      if (this.toiletDetailMsg.availableClosestoolCount2) {
+        this.womanavailableClosestoolCount = this.toiletDetailMsg.availableClosestoolCount2
+      }
+      if (this.toiletDetailMsg.availableClosestoolCount1) {
+        this.manavailableClosestoolCount = this.toiletDetailMsg.availableClosestoolCount1
+      }
+      if (this.toiletDetailMsg.detailRemark1 && this.toiletDetailMsg.detailRemark1.length > 0) {
+        this.manPeculiarSmellData = this.formatPeculiarSmellData(this.toiletDetailMsg.detailRemark1)
+      }
+      if (this.toiletDetailMsg.detailRemark2 && this.toiletDetailMsg.detailRemark2.length > 0) {
+        this.womanPeculiarSmellData = this.formatPeculiarSmellData(this.toiletDetailMsg.detailRemark2)
+      }
+      if (this.toiletDetailMsg.remark1 && this.toiletDetailMsg.remark1.closestoolCountUsableDetail && this.toiletDetailMsg.remark1.closestoolCountUsableDetail.length > 0) {
+        const remark = this.toiletDetailMsg.remark1;
+        this.manToiletMsg = this.formatToiletState(this.manClosestoolCount, remark.errorDetail, remark.sosDetail, remark.closestoolCountUsableDetail);
+        this.manTolietDetail = this.formatDetail(remark);
+      }
+      if (this.toiletDetailMsg.remark2 && this.toiletDetailMsg.remark2.closestoolCountUsableDetail && this.toiletDetailMsg.remark2.closestoolCountUsableDetail.length > 0) {
+        const remark = this.toiletDetailMsg.remark2;
+        this.womanToiletMsg = this.formatToiletState(this.womanClosestoolCount, remark.errorDetail, remark.sosDetail, remark.closestoolCountUsableDetail);
+        this.womanTolietDetail = this.formatDetail(remark);
+      }
+      if (this.toiletDetailMsg.remark3 && this.toiletDetailMsg.remark3.closestoolCountUsableDetail && this.toiletDetailMsg.remark3.closestoolCountUsableDetail.length > 0) {
+        const remark = this.toiletDetailMsg.remark3;
+        this.otherToiletMsg = this.formatToiletState(this.otherClosestoolCount, remark.errorDetail, remark.sosDetail, remark.closestoolCountUsableDetail);
+      }
+    },
     /**
      * 格式化异味数据
      * @param data
      * @returns {*}
      */
-    formatPeculiarSmellData(formatData, data) {
+    formatPeculiarSmellData(data) {
+      const formatData = [];
       if (data && data.length) {
         data.forEach(item => {
-          formatData.unshift(item.peculiarSmell)
+          const number = item?.peculiarSmell ? item.peculiarSmell : 0
+          formatData.unshift(number)
         })
       }
+      return formatData;
+    },
+    /**
+     * 格式化详情
+     * @param data
+     * @returns {{oldUrl: string, newUrl: string}}
+     */
+    formatDetail(data) {
+      const detail = JSON.parse(JSON.stringify(defaultDetail))
+      detail.ammonia = data.ammonia ? data.ammonia : null
+      detail.dampness = data.dampness ? data.dampness : null
+      detail.hydrogenSulfide = data.hydrogenSulfide ? data.hydrogenSulfide : null
+      detail.peculiarSmell = data.peculiarSmell ? data.peculiarSmell : null
+      detail.pm25 = data.pm25 ? data.pm25 : null
+      detail.temperature = data.temperature ? data.temperature : null
+      return detail
+    },
+    /**
+     * 格式化坑位状态
+     * @param errorData
+     * @param sosData
+     * @param useData
+     */
+    formatToiletState(total, errorData, sosData, useData) {
+      const stateData = []
+      for (let i = 0; i < total; i++) {
+        stateData.push(0)
+      }
+      if (errorData && errorData.length) {
+        errorData.forEach((item, index) => {
+          if (item === '1') {
+            stateData[index] = '3'
+          }
+        })
+      }
+      if (sosData && sosData.length) {
+        sosData.forEach((item, index) => {
+          if (item === '1') {
+            stateData[index] = '2'
+          }
+        })
+      }
+      if (useData && useData.length) {
+        useData.forEach((item, index) => {
+          if (item === '1') {
+            stateData[index] = item
+          }
+        })
+      }
+      return stateData
+    },
+    async getToiletInfo(id) {
+      const requestData = {
+        id: id
+      }
+      const data = await getToiletInfo(requestData);
+      this.monitorUrl = data.data.liveUrl;
+      // console.log(this.monitorUrl)
+    },
+    async getToiletDetails(id) {
+      const requestData = {
+        toiletId: id
+      }
+      const res = await getToiletDetails(requestData);
+      this.toiletDetailMsg = res.data.data;
+    },
+    getPersonDataByMonth(id) {
+      return new Promise((resolve, reject) => {
+        const requestData = {
+          toiletId: id
+        }
+        getPersonDataByMonth(requestData).then(response => {
+          const { data } = response
+
+          const { personSumPreMonth, personSumThisMonth } = data.data // introduction
+          this.monthPersonSum = personSumThisMonth || 0;
+          this.oldMonthPersonSum = personSumPreMonth || 0;
+          resolve(data)
+        }).catch(error => {
+          reject(error)
+        })
+      })
     }
   }
 }

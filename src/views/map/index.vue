@@ -2,7 +2,7 @@
   <div class="map">
     <div class="map-warp">
       <el-amap vid="amap" :zoom="zoom" :center="center" :events="mapEvents">
-        <el-amap-marker v-for="(project) in placeList" :content="content" :position="project.place" :events="markerEvents" :draggable="false" :vid="project.id" />
+        <el-amap-marker v-for="(project) in placeList" :key="project.id" :content="content" :position="project.place" :events="markerEvents" :draggable="false" :vid="project.id" />
       </el-amap>
     </div>
 
@@ -19,6 +19,7 @@
         </li>
         <li class="toolbar-item" @click="overviewClick"><i class="icon iconfont iconoverview" /></li>
         <li class="toolbar-item add" :class="{'is-active':isHandleMapCoordinate}" @click="addBathroomClick"><i class="icon iconfont iconadd-to" /></li>
+        <li class="toolbar-item add" :class="{'is-active':isHandleMarker}" @click="deleteBathroomClick"><i class="icon iconfont iconreduce" /></li>
         <li class="toolbar-item"><i class="icon iconfont iconsearch" /></li>
       </ul>
     </div>
@@ -46,14 +47,14 @@
     </div>
 
     <el-dialog :fullscreen="true" :visible.sync="isShowControlCenterVisible" custom-class="control-center-modal">
-      <control-center :toilet-details="toiletDetails" :toilet-name="currentToiletName" />
+      <control-center v-if="isShowControlCenterVisible" :toilet-details="toiletDetails" :toilet-name="currentToiletName" :close="gettimer" :before-close="beforeClose" />
     </el-dialog>
 
     <el-dialog :visible.sync="isShowOverviewVisible" :close-on-click-modal="false" :modal="false" width="430px" custom-class="overview-modal">
       <overview :city="center" />
     </el-dialog>
 
-    <CreateBathroom :place="coordinate" :is-show-add-bathroom-visible="isShowAddBathroomVisible" @close-create-model="closeCreateModel" />
+    <create-bathroom :place="coordinate" :is-show-add-bathroom-visible="isShowAddBathroomVisible" @close-create-model="closeCreateModel" />
 
   </div>
 </template>
@@ -64,7 +65,7 @@ import { mapGetters } from 'vuex'
 import screenfull from 'screenfull'
 import AlarmModal from '@/views/map/components/alarm-modal'
 import Overview from '@/views/map/components/Overview/Overview'
-import { getAlarmData, getToiletDetails } from '@/api/map'
+import { getAlarmData, getToiletDetails, deleteToilet } from '@/api/map'
 import CreateBathroom from '@/views/map/components/create-bathroom'
 
 export default {
@@ -93,7 +94,7 @@ export default {
         // 初始化地图处理
         init: (o) => {
           // 自定义地图样式
-          o.setMapStyle('amap://styles/0dcf094330800cbec42e2f7fedb3c512');
+          o.setMapStyle('amap://styles/9e782fce0426486d2d12da4333c40e67');
         },
         click: (m) => {
           if (this.isHandleMapCoordinate) {
@@ -105,11 +106,13 @@ export default {
       // 点的事件
       markerEvents: {
         click: (e) => {
-          console.log(e)
           // 没有全局概览
-          if (!this.isHandleMapCoordinate) {
+          if (!this.isHandleMapCoordinate && !this.isHandleMarker) {
             // e.target.w.vid 项目的id
             this.getToiletDetails(e.target.w.vid);
+          }
+          if (this.isHandleMarker) {
+            this.deleteToilet(e.target.w.vid);
           }
         }
       },
@@ -134,10 +137,13 @@ export default {
       isFullscreen: false,
       // 是否获取地图的坐标
       isHandleMapCoordinate: false,
+      // 可以点击Marker
+      isHandleMarker: false,
       // 获取的坐标
       coordinate: '',
       // 是否显示添加厕所界面
-      isShowAddBathroomVisible: false
+      isShowAddBathroomVisible: false,
+      timer: ''
     };
   },
   computed: {
@@ -182,7 +188,6 @@ export default {
         item.place = item.place.split(',')
         this.placeList.push(item);
       })
-      console.log(this.placeList)
     },
     // 设置地图的中心
     setMapCenter(project) {
@@ -212,6 +217,10 @@ export default {
     addBathroomClick() {
       this.isHandleMapCoordinate = !this.isHandleMapCoordinate;
     },
+    // 删除厕所
+    deleteBathroomClick() {
+      this.isHandleMarker = !this.isHandleMarker
+    },
     closeCreateModel(data) {
       this.isHandleMapCoordinate = data
       this.isShowAddBathroomVisible = data
@@ -228,7 +237,7 @@ export default {
     // 获取厕所详细信息
     async getToiletDetails(id) {
       const requestData = {
-        toiletId: '1'
+        toiletId: id
       }
       const res = await getToiletDetails(requestData);
       this.toiletDetails = res.data.data;
@@ -243,17 +252,60 @@ export default {
         this.isShowControlCenterVisible = true;
       } else {
         this.$message({
-          message: '没有改厕所的详情数据',
+          message: '没有该厕所的详情数据',
           type: 'warning'
         })
         return false
       }
     },
+    deleteToilet(id) {
+      const requestData = {
+        id: id
+      }
+      this.$store.dispatch('user/getProjectList');
+      this.$confirm('此操作将删除厕所, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        // return new Promise((resolve, reject) => {
+        deleteToilet(requestData).then(response => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+          this.isHandleMarker = false;
+          for (let i = 0; i < this.placeList.length; i++) {
+            if (this.placeList[i].id === id) {
+              this.placeList.splice(i, 1);
+              break;
+            }
+          }
+          for (let i = 0; i < this.projectData.length; i++) {
+            if (this.projectData[i].id === id) {
+              this.projectData.splice(i, 1);
+              break;
+            }
+          }
+          this.$store.dispatch('user/getProjectList');
+        }).catch(error => {
+          this.$message({
+            type: 'success',
+            message: error
+          });
+        })
+        // })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
+    },
     // toggleSideBar() {
     //   this.$store.dispatch('app/toggleSideBar')
     // },
     locationHandle(val) {
-      console.log(val)
       this.alarmLoction = val;
     },
     handleNodeClick(data) {
@@ -276,6 +328,12 @@ export default {
       if (screenfull.enabled) {
         screenfull.off('change', this.changeFullscreen)
       }
+    },
+    gettimer(data) {
+      this.timer = data
+    },
+    beforeClose() {
+      clearInterval(this.timer)
     }
     // processingHandle(val) {
     //   this.alarmProcessing = val;

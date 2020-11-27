@@ -1,7 +1,7 @@
 <template>
   <div class="toilet-state-warp" :class="{'accessible-toilet-state':isAccessibleToilet}">
     <div class="top-warp">
-      <h4><i class="icon" :class="iconClass"></i>厕所状态</h4>
+      <h4><i class="icon" :class="iconClass" />厕所状态</h4>
       <div class="state-list clear">
         <ul class="clear">
           <li>有人</li>
@@ -9,32 +9,32 @@
           <li>故障</li>
           <li>求助</li>
         </ul>
-        <div class="total">剩余坑位：<span>12个</span></div>
+        <div class="total">剩余坑位：<span>{{ availableClosestoolCount }}个</span></div>
       </div>
       <ul class="state-details-list clear">
-        <li v-for="item in stateList" :key="item.state" class="state-details-item">
-          <div class="icon-warp"><i class="icon iconfont" :class="iconClass" /></div>
-          <p class="name">{{item.name}}</p>
+        <li v-for="item in stateList" :key="item.name" class="state-details-item">
+          <div class="icon-warp"><i class="icon iconfont" :class="formatClassName(item.state)" /></div>
+          <p class="name">{{ item.name }}</p>
         </li>
       </ul>
     </div>
     <div class="middle-warp">最新打扫时间：<span class="time">2020-1-1</span></div>
-    <div class="bottom-warp" v-if="!isAccessibleToilet">
+    <div v-if="!isAccessibleToilet" class="bottom-warp">
       <ul class="clear">
         <li class="weather">
           <div class="icon-warp"><i class="icon iconfont icontemperature" /></div>
           <div class="describe">温度</div>
-          <div class="current-weather">{{formatData(environmentalState.temperature)}}</div>
+          <div class="current-weather">{{ formatData(environmentalState.temperature) }}</div>
         </li>
         <li class="weather">
           <div class="icon-warp"><i class="icon iconfont iconhydrothion" /></div>
           <div class="describe">硫化氢</div>
-          <div class="current-weather">{{formatData(environmentalState.hydrogenSulfide)}}</div>
+          <div class="current-weather">{{ formatData(environmentalState.hydrogenSulfide) }}</div>
         </li>
         <li class="weather">
           <div class="icon-warp"><i class="icon iconfont iconammonia" /></div>
           <div class="describe">氨气</div>
-          <div class="current-weather">{{formatData(environmentalState.ammonia)}}</div>
+          <div class="current-weather">{{ formatData(environmentalState.ammonia) }}</div>
         </li>
         <li class="weather">
           <div class="icon-warp"><i class="icon iconfont iconprimary-air-system" /></div>
@@ -44,7 +44,7 @@
         <li class="weather">
           <div class="icon-warp"><i class="icon iconfont iconpm25" /></div>
           <div class="describe">PM2.5</div>
-          <div class="current-weather">{{formatData(environmentalState.pm25)}}</div>
+          <div class="current-weather">{{ formatData(environmentalState.pm25) }}</div>
         </li>
         <li class="weather">
           <div class="icon-warp"><i class="icon iconfont iconfumee help" /></div>
@@ -59,12 +59,12 @@
         <li class="weather">
           <div class="icon-warp"><i class="icon iconfont iconpeculiar-smell" /></div>
           <div class="describe">异味</div>
-          <div class="current-weather">{{formatData(environmentalState.peculiarSmell)}}</div>
+          <div class="current-weather">{{ formatData(environmentalState.peculiarSmell) }}</div>
         </li>
         <li class="weather">
           <div class="icon-warp"><i class="icon iconfont iconhumidite" /></div>
           <div class="describe">湿度</div>
-          <div class="current-weather">{{formatData(environmentalState.dampness)}}</div>
+          <div class="current-weather">{{ formatData(environmentalState.dampness) }}</div>
         </li>
       </ul>
     </div>
@@ -72,6 +72,7 @@
 </template>
 
 <script>
+
 export default {
   name: 'ToiletState',
   props: {
@@ -83,19 +84,37 @@ export default {
       type: String,
       default: 'man'
     },
+    // 坑位总数
     closestoolCount: {
       type: Number,
       required: true
     },
+    availableClosestoolCount: {
+      type: Number,
+      required: true
+    },
+    // 厕所设备详情
     detail: {
-      type: Object
+      type: Object,
+      default: () => {
+        return {}
+      }
+    },
+    // 坑位状态
+    toiletMsg: {
+      type: Array,
+      default: () => {
+        return []
+      }
     }
   },
   data() {
     return {
       stateList: [],
       environmentalState: this.detail,
-      closestoolNum: this.closestoolCount
+      closestoolNum: this.closestoolCount,
+      availableCount: this.availableClosestoolCount,
+      toiletState: this.toiletMsg || []
     }
   },
   computed: {
@@ -123,7 +142,18 @@ export default {
     },
     closestoolCount(newVal, oldVal) {
       if (newVal) {
-        this.environmentalState = newVal
+        this.closestoolNum = newVal
+      }
+    },
+    availableClosestoolCount(newVal, oldVal) {
+      if (newVal) {
+        this.availableCount = newVal
+      }
+    },
+    toiletMsg(newVal, oldVal) {
+      if (newVal) {
+        this.toiletState = newVal;
+        this.formatStateList();
       }
     }
   },
@@ -135,14 +165,31 @@ export default {
      * 格式化数据
      */
     formatData(data) {
-      return (data || data === 0) ? data : '暂无';
+      return (data || data === 0) ? data : '暂无'
     },
+    /**
+     * 厕所信息
+     */
     formatStateList() {
+      this.stateList = []
       for (let i = 0; i < this.closestoolCount; i++) {
         const item = {
-          name: (i + 1) + '号'
+          name: (i + 1) + '号',
+          state: this.toiletState[i]
         }
         this.stateList.push(item)
+      }
+    },
+    formatClassName(state) {
+      switch (state) {
+        case '1': // 有人
+          return this.iconClass + ' being';
+        case '2': // 故障
+          return this.iconClass + ' fault';
+        case '3': // 求助
+          return this.iconClass + ' help';
+        default:
+          return this.iconClass
       }
     }
   }
