@@ -8,7 +8,7 @@
         <el-input v-model="createBathroom.placeName" placeholder="厕所名称" />
       </el-form-item>
       <el-form-item label="厕所标识码：">
-        <el-input v-model="createBathroom.harewareId" placeholder="女厕所马桶数量" />
+        <el-input v-model="createBathroom.hardwareId" placeholder="厕所标识码" />
       </el-form-item>
       <el-form-item label="男厕坑位总数：">
         <el-input v-model="createBathroom.manToiletCount" placeholder="男厕所马桶数量" />
@@ -33,7 +33,7 @@ const defaultBathroomMassage = {
   placeName: '',
   manToiletCount: '',
   womanToiletCount: '',
-  harewareId: ''
+  hardwareId: ''
 }
 export default {
   name: 'CreateBathroom',

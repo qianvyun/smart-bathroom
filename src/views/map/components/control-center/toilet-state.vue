@@ -1,7 +1,7 @@
 <template>
   <div class="toilet-state-warp" :class="{'accessible-toilet-state':isAccessibleToilet}">
     <div class="top-warp">
-      <h4><i class="icon" :class="iconClass" />厕所状态</h4>
+      <h4><i class="icon iconfont" :class="iconClass" />厕所状态</h4>
       <div class="state-list clear">
         <ul class="clear">
           <li>有人</li>

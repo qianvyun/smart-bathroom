@@ -42,8 +42,9 @@ export default {
     return {
       isPlayMonitor: false,
       monitorUrl: this.url,
+      // monitorUrl: 'https://cmgw-vpc.lechange.com:8890/LCO/5G0341DPAK95DF5/0/1/20201117T142148/46d60ff8a46f3099caca338393c97e57.m3u8?proto=https',
       playerOptions: {},
-      timer: ''
+      videoTimer: ''
     }
   },
   computed: {
@@ -84,8 +85,8 @@ export default {
         fluid: true,
         sources: [{
           type: 'application/x-mpegURL',
-          // src: this.monitorUrl
-          src: 'https://cmgw-vpc.lechange.com:8890/LCO/5G0341DPAK95DF5/0/1/20201117T142148/46d60ff8a46f3099caca338393c97e57.m3u8?proto=https'
+          src: this.monitorUrl
+          // src: 'https://cmgw-vpc.lechange.com:8890/LCO/5G0341DPAK95DF5/0/1/20201117T142148/46d60ff8a46f3099caca338393c97e57.m3u8?proto=https'
         }],
         // 你的封面地址
         poster: '',
@@ -93,9 +94,10 @@ export default {
         // 允许覆盖Video.js无法播放媒体源时显示的默认信息。
         notSupportedMessage: '此视频暂无法播放，请稍后再试'
       }
-      console.log(this.playerOptions.src)
+      console.log(this.playerOptions.sources[0].src)
     },
     playChange() {
+      console.log(this.monitorUrl, '变更播放状态')
       if (this.isPlayMonitor) {
         // this.playerOptions.sources[0].src = 'https://cmgw-vpc.lechange.com:8890/LCO/5G0341DPAK95DF5/0/1/20201117T142148/46d60ff8a46f3099caca338393c97e57.m3u8?proto=https'
         // this.player.src('https://cmgw-vpc.lechange.com:8890/LCO/5G0341DPAK95DF5/0/1/20201117T142148/46d60ff8a46f3099caca338393c97e57.m3u8?proto=https');
@@ -107,16 +109,18 @@ export default {
       }
     },
     onPlayerPlay(player) {
+      console.log(this.monitorUrl, '播放')
       this.isPlayMonitor = true;
-      this.timer = setTimeout(() => {
+      this.videoTimer = setTimeout(() => {
         this.player.pause();
         this.player.src('');
         this.isPlayMonitor = false;
-        clearTimeout(this.timer);
+        clearTimeout(this.videoTimer);
       }, 1000 * 60 * 10)
     },
     onPlayerPause(player) {
-      clearTimeout(this.timer);
+      console.log(this.monitorUrl, '暂停')
+      clearTimeout(this.videoTimer);
     }
   }
 }
