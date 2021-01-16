@@ -1,7 +1,7 @@
 <template>
   <el-table
-    :data="atableData"
-    height="272"
+    :data="tableData"
+    height="320"
     border
     header-cell-class-name="alarm-table-heard"
     cell-class-name="alarm-table-cell"
@@ -23,31 +23,45 @@
 <script>
 export default {
   name: 'TotalToiletsTable',
+  props: {
+    dataList: {
+      type: Array,
+      required: true
+    }
+  },
   data() {
     return {
       defaultCol: [
         {
           porp: 'name',
           lable: '厕所名称',
-          width: 95
+          width: 110
         },
         {
           porp: 'address',
           lable: '项目位置'
         }
       ],
-      atableData: [{
-        name: '仙林1号',
-        address: '江苏省南京市玄武区中山东路189号'
-      },
-      {
-        name: '仙林1号',
-        address: '江苏省南京市玄武区中山东路189号'
-      },
-      {
-        name: '仙林1号',
-        address: '江苏省南京市玄武区中山东路189号'
-      }]
+      // tableData: [{
+      //   name: '仙林1号',
+      //   address: '江苏省南京市玄武区中山东路189号'
+      // },
+      // {
+      //   name: '仙林1号',
+      //   address: '江苏省南京市玄武区中山东路189号'
+      // },
+      // {
+      //   name: '仙林1号',
+      //   address: '江苏省南京市玄武区中山东路189号'
+      // }]
+      tableData: this.dataList
+    }
+  },
+  watch: {
+    dataList(newVal) {
+      if (newVal) {
+        this.tableData = newVal
+      }
     }
   }
 }

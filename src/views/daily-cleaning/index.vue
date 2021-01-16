@@ -3,7 +3,7 @@
     <el-row :gutter="20">
       <el-col :span="3">
         <div class="project-list">
-          <project-list /><!--:projectData="projectList"-->
+          <project-list @handleProject="handleProject" />
         </div>
       </el-col>
       <el-col :span="21">
@@ -31,7 +31,7 @@
             </el-table-column>
             <el-table-column label="照片" width="150px" align="center">
               <template slot-scope="{row}">
-                <img :src="row.avatar">
+                <img class="avatar" :src="row.avatar">
               </template>
             </el-table-column>
             <el-table-column label="时间" width="150px" align="center">
@@ -40,9 +40,9 @@
               </template>
             </el-table-column>
             <el-table-column label="状态" width="150px" align="center">
-              <!--<template slot-scope="{row}">
-                <span>{{ row.state | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-              </template>-->
+              <template slot-scope="{row}">
+                <span>{{ row.state | formatState(row.state) }}</span>
+              </template>
             </el-table-column>
             <el-table-column label="联系方式" align="center">
               <template slot-scope="{row}">
@@ -54,46 +54,11 @@
         </div>
       </el-col>
     </el-row>
-
-    <!--<el-dialog :visible.sync="dialogVisible" title="新增保洁员" custom-class="create-dialpg">
-      <el-form :model="cleaner" label-width="85px" label-position="right">
-        <el-form-item label="照片：">
-          <el-upload
-            class="avatar-uploader"
-            action="https://jsonplaceholder.typicode.com/posts/"
-            :show-file-list="false"
-            :on-success="handleAvatarSuccess"
-            :before-upload="beforeAvatarUpload"
-          >
-            <img v-if="cleaner.imageUrl" :src="cleaner.imageUrl" class="avatar">
-            <i v-else class="el-icon-plus avatar-uploader-icon" />
-          </el-upload>
-        </el-form-item>
-        <el-form-item label="姓名：">
-          <el-input v-model="cleaner.name" placeholder="用户名" />
-        </el-form-item>
-        <el-form-item label="性别：">
-          <el-radio-group v-model="cleaner.sex">
-            <el-radio label="1">男</el-radio>
-            <el-radio label="2">女</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="电话：">
-          <el-input v-model="cleaner.mobile" placeholder="电话" />
-        </el-form-item>
-      </el-form>
-      <div slot="footer">
-        <el-button plain @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="confirmCleaner">确定</el-button>
-      </div>
-    </el-dialog>-->
   </div>
 </template>
 
 <script>
 import { getDaily } from '@/api/daily'
-// import waves from '@/directive/waves' // waves directive
-// import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination'
 import { mapGetters } from 'vuex'
 import ProjectList from '@/components/ProjectList/index'
@@ -106,24 +71,32 @@ const cleanerDefault = {
 export default {
   name: 'DailyCleaning',
   components: { ProjectList, Pagination },
+  filters: {
+    formatState(state) {
+      let stateStr = ''
+      switch (state) {
+        case 1:
+          stateStr = '正常'
+          break;
+        case 2:
+          stateStr = '在线'
+          break;
+        case 3:
+          stateStr = '离线'
+          break;
+        default:
+          stateStr = '禁用'
+          break;
+      }
+      return stateStr;
+    }
+  },
   // directives: { waves },
   data() {
     return {
       cleaner: Object.assign({}, cleanerDefault),
-      // projectList: [
-      //   {
-      //     id: '111',
-      //     name: '項目1'
-      //   },
-      //   {
-      //     id: '222',
-      //     name: '項目1'
-      //   },
-      //   {
-      //     id: '333',
-      //     name: '項目1'
-      //   }
-      // ],
+      currentProjectId: '',
+      currentProject: '',
       imageUrl: '',
       tableKey: 0,
       dailyList: null,
@@ -139,43 +112,39 @@ export default {
   computed: {
     ...mapGetters([
       'userMassage'
-    ])
+    ]),
+    currentp() {
+      return this.$store.getters.currentPageItem
+    }
+  },
+  watch: {
+    currentp(toilet) {
+      this.currentProjectId = toilet.id;
+      this.currentProject = toilet;
+      this.getDailyList();
+    }
   },
   created() {
-    this.getDailyList()
+    this.getDailyList();
   },
   methods: {
+    handleProject(project) {
+      this.currentProjectId = project.id;
+      this.currentProject = project;
+      this.getDailyList();
+    },
     async getDailyList() {
       const requestData = {
-        username: this.userMassage.username,
-        mobile: this.userMassage.mobile,
+        // username: this.userMassage.username,
+        // mobile: this.userMassage.mobile,
+        toiletId: this.currentProjectId,
         page: this.listQuery.page,
         limit: this.listQuery.limit
       }
+      this.dailyList = []
       const res = await getDaily(requestData);
-      this.dailyList = res.data;
-      this.total = res.data.totalCount;
-    },
-    handleAddCleaner() {
-      this.dialogVisible = true;
-    },
-    handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw);
-    },
-    beforeAvatarUpload(file) {
-      const isJPG = file.type === 'image/jpeg';
-      const isLt2M = file.size / 1024 / 1024 < 2;
-
-      if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 格式!');
-      }
-      if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!');
-      }
-      return isJPG && isLt2M;
-    },
-    confirmCleaner() {
-      console.log('新增保洁')
+      this.dailyList = res.data ? res.data : []
+      this.total = res.data.length;
     }
   }
 }
@@ -212,6 +181,9 @@ export default {
   }
 </style>
 <style lang="scss" scoped>
+  .avatar{
+    width: 125px;
+  }
   .daily-cleaning-container{
     width: 100%;
     height: calc(100vh - 78px);

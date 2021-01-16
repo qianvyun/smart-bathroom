@@ -4,11 +4,11 @@
       <div class="permission-container-header">
         <div class="title"><i class="icon iconfont iconlist" />用户列表</div>
         <div class="add-user">
-          <el-button type="primary" @click="handleAddRole"><i class="icon iconfont iconadd"/>添加用户</el-button>
+          <el-button type="primary" @click="handleAddRole"><i class="icon iconfont iconadd" />添加用户</el-button>
         </div>
       </div>
 
-      <el-table v-loading="listLoading" :data="usersList" height="calc(100vh - 260px)" style="width: 100%;margin-top:30px;" border >
+      <el-table v-loading="listLoading" :data="usersList" height="calc(100vh - 260px)" style="width: 100%;margin-top:30px;" border>
         <el-table-column align="center" label="用户名称" width="200">
           <template slot-scope="scope">
             {{ scope.row.username }}
@@ -29,7 +29,7 @@
             <el-button size="small" type="primary" class="edit" @click="handleEdit(scope)">
               <i class="icon el-icon-edit" />编辑
             </el-button>
-            <el-button size="small" class="delete" @click="handleDelete(scope)"><i class="icon iconfont icondelete"/>删除
+            <el-button size="small" class="delete" @click="handleDelete(scope)"><i class="icon iconfont icondelete" />删除
             </el-button>
           </template>
         </el-table-column>
@@ -38,11 +38,24 @@
     </div>
 
     <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑用户':'新增用户'" custom-class="create-dialpg" width="550px">
-      <el-form :model="user" label-width="85px" label-position="right">
-        <el-form-item label="用户名：">
+      <el-form :model="user" :rules="rules" label-width="85px" label-position="right">
+        <el-form-item>
+          <el-upload
+            class="avatar-uploader"
+            :action="avatarUploadUrl"
+            :headers="avatarObject"
+            :show-file-list="false"
+            :on-success="handleAvatarSuccess"
+            :before-upload="beforeAvatarUpload"
+          >
+            <img v-if="user.avatar" :src="user.avatar" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon" />
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="用户名：" prop="username">
           <el-input v-model="user.username" placeholder="用户名" :disabled="dialogType==='edit'" />
         </el-form-item>
-        <el-form-item label="姓名：">
+        <el-form-item label="姓名：" prop="name">
           <el-input v-model="user.name" placeholder="姓名" />
         </el-form-item>
         <el-form-item label="密码：">
@@ -56,10 +69,10 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="邮箱：">
-          <el-input v-model="user.email" placeholder="邮箱"/>
+          <el-input v-model="user.email" type="email" placeholder="邮箱" />
         </el-form-item>
-        <el-form-item label="电话：">
-          <el-input v-model="user.mobile" placeholder="电话"/>
+        <el-form-item label="电话：" prop="mobile">
+          <el-input v-model="user.mobile" type="tel" placeholder="电话" />
         </el-form-item>
         <el-form-item label="用户类别：">
           <el-radio-group v-model="user.userType">
@@ -69,14 +82,14 @@
             <el-radio label="3">维修</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="项目：">
+        <el-form-item label="项目：" prop="toiletId">
           <el-tree
             ref="tree"
             :check-strictly="checkStrictly"
             :data="projectList"
             :props="defaultProps"
             show-checkbox
-            node-key="path"
+            node-key="id"
             class="permission-tree"
           />
         </el-form-item>
@@ -104,7 +117,8 @@ const defaultUserMassage = {
   email: '',
   mobile: '',
   userType: '0',
-  project: []
+  avatar: '',
+  toiletId: []
 }
 
 export default {
@@ -112,6 +126,27 @@ export default {
   data() {
     return {
       user: Object.assign({}, defaultUserMassage),
+      rules: {
+        username: [
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { min: 6, max: 16, message: '长度在 6 到 16 个字符', trigger: 'blur' }
+        ],
+        name: [
+          { required: true, message: '请选择姓名', trigger: 'blur' },
+          { min: 2, max: 5, message: '长度在 2 到 5 个字符', trigger: 'blur' }
+        ],
+        mobile: [
+          { required: true, message: '请输入11位电话号码', trigger: 'blur' },
+          { min: 11, max: 11, message: '11位数字', trigger: 'blur' }
+        ],
+        toiletId: [
+          { required: true }
+        ]
+      },
+      avatarUploadUrl: process.env.VUE_APP_BASE_API + '/file/upload',
+      avatarObject: {
+        token: this.$store.getters.token
+      },
       listLoading: true,
       routes: [],
       usersList: [],
@@ -159,29 +194,32 @@ export default {
     },
     async getUsersList() {
       const requestData = {
-        username: this.userMassage.username,
-        mobile: this.userMassage.mobile,
+        // username: this.userMassage.username,
+        // mobile: this.userMassage.mobile,
+        userType: String(this.userMassage.userType),
         page: this.listQuery.page,
         limit: this.listQuery.limit
-      }
-      this.listLoading = true
-      const res = await getUsers(requestData)
-      this.listLoading = false
-      this.usersList = res.data.list
-      this.total = res.data.totalCount
+      };
+      this.listLoading = true;
+      const res = await getUsers(requestData);
+      this.listLoading = false;
+      this.usersList = res.data.list;
+      this.total = res.data.totalCount;
     },
     generateArr(projects) {
-      let data = []
-      projects.forEach(project => {
-        data.push(project)
-        if (project.toiletList) {
-          const temp = this.generateArr(project.toiletList)
-          if (temp.length > 0) {
-            data = [...data, ...temp]
+      let data = [];
+      if (projects && projects.length) {
+        projects.forEach(project => {
+          data.push(project)
+          if (project.toiletList) {
+            const temp = this.generateArr(project.toiletList)
+            if (temp.length > 0) {
+              data = [...data, ...temp]
+            }
           }
-        }
-      })
-      return data
+        })
+      }
+      return data;
     },
     handleAddRole() {
       this.user = Object.assign({}, defaultUserMassage)
@@ -192,17 +230,17 @@ export default {
       this.dialogVisible = true
     },
     handleEdit(scope) {
-      this.dialogType = 'edit'
-      this.dialogVisible = true
-      this.checkStrictly = true
-      this.user = deepClone(scope.row)
-      this.user.sex = this.user.sex.toString()
-      this.user.userType = this.user.userType.toString()
+      this.dialogType = 'edit';
+      this.dialogVisible = true;
+      this.checkStrictly = true;
+      this.user = deepClone(scope.row);
+      this.user.sex = this.user.sex.toString();
+      this.user.userType = this.user.userType.toString();
       this.$nextTick(() => {
         // const projects = this.generateProjects(this.user.projects)
-        this.$refs.tree.setCheckedNodes(this.generateArr(this.user.projects))
+        this.$refs.tree.setCheckedNodes(this.generateArr(this.user.toiletId));
         // set checked state of a node not affects its father and child nodes
-        this.checkStrictly = false
+        this.checkStrictly = false;
       })
     },
     handleDelete({ $index, row }) {
@@ -225,66 +263,104 @@ export default {
     },
     generateTree(projects, checkedKeys) {
       const res = []
-
       for (const project of projects) {
         if (project.toiletList) {
           project.toiletList = this.generateTree(project.toiletList, checkedKeys)
         }
 
-        if (checkedKeys.includes(project) || (project.toiletList && project.toiletList.length >= 1)) {
-          res.push(project)
+        if (checkedKeys.includes(project.id) || (project.toiletList && project.toiletList.length >= 1)) {
+          res.push(project.id)
         }
       }
       return res
     },
     async confirmUser() {
-      const isEdit = this.dialogType === 'edit'
-      const checkedKeys = this.$refs.tree.getCheckedKeys()
-      this.user.project = this.generateTree(deepClone(this.projectList), checkedKeys)
+      const isEdit = this.dialogType === 'edit';
+      const checkedKeys = this.$refs.tree.getCheckedKeys();
+      this.user.toiletId = this.generateTree(deepClone(this.projectList), checkedKeys);
+      if (!this.user.username) {
+        this.$message.error('请输入用户名!');
+        return;
+      }
+      if (!this.user.name) {
+        this.$message.error('请输入姓名!');
+        return;
+      }
+      if (!this.user.mobile) {
+        this.$message.error('请输入电话号码!');
+        return;
+      }
+      if (!this.user.password) {
+        this.user.password = this.user.mobile;
+      }
+      if (!this.user.toiletId || !this.user.toiletId.length) {
+        this.$message.error('请选择项目!')
+        return
+      }
       if (isEdit) {
-        await updateUser(this.user.key, this.user)
+        await updateUser(this.user.key, this.user);
         for (let index = 0; index < this.usersList.length; index++) {
           if (this.usersList[index].key === this.user.key) {
-            this.usersList.splice(index, 1, Object.assign({}, this.user))
+            this.usersList.splice(index, 1, Object.assign({}, this.user));
             break
           }
         }
       } else {
-        const { data } = await addUser(this.user)
-        this.user.key = data.key
-        this.usersList.push(this.user)
+        const { data } = await addUser(this.user);
+        this.user.key = data.key;
+        this.usersList.push(this.user);
       }
 
-      const { username, name } = this.user
-      this.dialogVisible = false
+      const { username, name } = this.user;
+      this.dialogVisible = false;
       this.$notify({
-        title: 'Success',
+        title: '用户创建成功',
         dangerouslyUseHTMLString: true,
         message: `
-          <div>用户名: ${username}</div>
-          <div>姓名: ${name}</div>
-        `,
+        <div>用户名: ${username}</div>
+        <div>姓名: ${name}</div>
+      `,
         type: 'success'
-      })
+      });
     },
     onlyOneShowingChild(children = [], parent) {
-      let onlyOneChild = null
-      const showingChildren = children.filter(item => !item.hidden)
+      let onlyOneChild = null;
+      const showingChildren = children.filter(item => !item.hidden);
 
       // When there is only one child route, the child route is displayed by default
       if (showingChildren.length === 1) {
-        onlyOneChild = showingChildren[0]
-        onlyOneChild.path = path.resolve(parent.path, onlyOneChild.path)
-        return onlyOneChild
+        onlyOneChild = showingChildren[0];
+        onlyOneChild.path = path.resolve(parent.path, onlyOneChild.path);
+        return onlyOneChild;
       }
 
       // Show parent if there are no child route to display
       if (showingChildren.length === 0) {
-        onlyOneChild = { ...parent, path: '', noShowingChildren: true }
+        onlyOneChild = { ...parent, path: '', noShowingChildren: true };
         return onlyOneChild
       }
 
       return false
+    },
+    handleAvatarSuccess(res, file) {
+      if (res.msg === 'success') {
+        this.user.avatar = res.data;
+      } else {
+        this.user.avatar = '';
+        this.$message.error('上传头像图片失败!');
+      }
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === 'image/jpeg';
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!');
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!');
+      }
+      return isJPG && isLt2M;
     }
   }
 }
@@ -313,6 +389,18 @@ export default {
         vertical-align: middle;
       }
     }
+  }
+
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
   }
 </style>
 <style lang="scss" scoped>
@@ -361,6 +449,26 @@ export default {
           margin-right: 5px;
         }
       }
+    }
+
+    .avatar-uploader{
+      margin-right: 85px;
+      text-align: center;
+    }
+
+    .avatar-uploader-icon {
+      font-size: 28px;
+      color: #8c939d;
+      width: 108px;
+      height: 108px;
+      line-height: 108px;
+      text-align: center;
+    }
+
+    .avatar {
+      width: 108px;
+      height: 108px;
+      display: block;
     }
   }
 </style>

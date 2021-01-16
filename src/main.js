@@ -21,6 +21,13 @@ import './utils/error-log' // error log
 import AMap from 'vue-amap'
 
 import VideoPlayer from 'vue-video-player'
+
+// 引入video样式
+import 'video.js/dist/video-js.css'
+import 'vue-video-player/src/custom-theme.css'
+
+// 引入hls.js
+import 'videojs-contrib-hls.js/src/videojs.hlsjs'
 Vue.use(VideoPlayer)
 import * as filters from './filters' // global filters
 

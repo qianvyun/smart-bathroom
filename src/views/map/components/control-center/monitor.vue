@@ -23,13 +23,6 @@
 </template>
 
 <script>
-// 引入video样式
-import 'video.js/dist/video-js.css'
-import 'vue-video-player/src/custom-theme.css'
-
-// 引入hls.js
-import 'videojs-contrib-hls.js/src/videojs.hlsjs'
-
 export default {
   name: 'Monitor',
   props: {
@@ -94,10 +87,8 @@ export default {
         // 允许覆盖Video.js无法播放媒体源时显示的默认信息。
         notSupportedMessage: '此视频暂无法播放，请稍后再试'
       }
-      console.log(this.playerOptions.sources[0].src)
     },
     playChange() {
-      console.log(this.monitorUrl, '变更播放状态')
       if (this.isPlayMonitor) {
         // this.playerOptions.sources[0].src = 'https://cmgw-vpc.lechange.com:8890/LCO/5G0341DPAK95DF5/0/1/20201117T142148/46d60ff8a46f3099caca338393c97e57.m3u8?proto=https'
         // this.player.src('https://cmgw-vpc.lechange.com:8890/LCO/5G0341DPAK95DF5/0/1/20201117T142148/46d60ff8a46f3099caca338393c97e57.m3u8?proto=https');
@@ -109,7 +100,6 @@ export default {
       }
     },
     onPlayerPlay(player) {
-      console.log(this.monitorUrl, '播放')
       this.isPlayMonitor = true;
       this.videoTimer = setTimeout(() => {
         this.player.pause();
@@ -119,7 +109,6 @@ export default {
       }, 1000 * 60 * 10)
     },
     onPlayerPause(player) {
-      console.log(this.monitorUrl, '暂停')
       clearTimeout(this.videoTimer);
     }
   }

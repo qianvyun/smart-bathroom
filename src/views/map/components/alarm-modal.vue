@@ -23,7 +23,7 @@
           v-for="col of defaultCol"
         >
           <el-table-column
-            v-if="col.porp === 'pic'"
+            v-if="col.porp === 'operationValueStr'"
             :key="col.porp"
             :prop="col.porp"
             :label="col.lable"
@@ -32,8 +32,32 @@
             align="center"
           >
             <template slot-scope="scope">
-              <img v-if="scope.row.imgFile" class="image" :src="scope.row.pic">
-              <span v-if="!scope.row.imgFile">暂无图片</span>
+              <img v-if="scope.row.operationValueStr" class="image" :src="scope.row.operationValueStr">
+              <span v-if="!scope.row.operationValueStr">暂无图片</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            v-else-if="col.porp === 'operationType'"
+            :key="col.porp"
+            :prop="col.porp"
+            :label="col.lable"
+            :width="col.width"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <span>{{ scope.row.operationType | formatType(scope.row.operationType) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            v-else-if="col.porp === 'createTime'"
+            :key="col.porp"
+            :prop="col.porp"
+            :label="col.lable"
+            :width="col.width"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <span>{{ scope.row.createTime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -68,6 +92,39 @@
 import { deleteAlarm } from '@/api/map'
 export default {
   name: 'AlarmModal',
+  filters: {
+    formatType(type) {
+      let stateStr = ''
+      switch (type) {
+        // 0-评价 1-签到 2-求救 3-报警 4-清洁 5-缺纸 6-火警 7-清洁'
+        case 1:
+          stateStr = '签到'
+          break;
+        case 2:
+          stateStr = '求救'
+          break;
+        case 3:
+          stateStr = '报警'
+          break;
+        case 4:
+          stateStr = '清洁'
+          break;
+        case 5:
+          stateStr = '缺纸'
+          break;
+        case 6:
+          stateStr = '火警'
+          break;
+        case 7:
+          stateStr = '清洁'
+          break;
+        default:
+          stateStr = '评价'
+          break;
+      }
+      return stateStr;
+    }
+  },
   props: {
     visible: {
       type: Boolean,
@@ -88,17 +145,17 @@ export default {
           width: 60
         },
         {
-          porp: 'deviceName',
+          porp: 'toiletName',
           lable: '厕所名称',
           width: 90
         },
         {
-          porp: 'operationValue',
+          porp: 'operationType',
           lable: '告警类型',
           width: 90
         },
         {
-          porp: 'createtime',
+          porp: 'createTime',
           lable: '告警时间',
           width: 90
         },
@@ -108,45 +165,13 @@ export default {
           width: 120
         },
         {
-          porp: 'imgFile',
+          porp: 'operationValueStr',
           lable: '图片',
           width: 120
         }
       ],
       tableData: null,
       alarmNum: 0
-      // atableData: [{
-      //   id: '206',
-      //   name: '仙林1号',
-      //   type: '缺纸',
-      //   time: '2020/08/14 14:00:23',
-      //   address: '江苏省南京市玄武区中山东路189号',
-      //   pic: require(`../../../assets/images/pic.jpeg`)
-      // },
-      // {
-      //   id: '206',
-      //   name: '仙林1号',
-      //   type: 'this.alarmData缺纸',
-      //   time: '2020/08/14 14:00:23',
-      //   address: '江苏省南京市玄武区中山东路189号',
-      //   pic: require(`../../../assets/images/pic.jpeg`)
-      // },
-      // {
-      //   id: '206',
-      //   name: '仙林1号',
-      //   type: '缺纸',
-      //   time: '2020/08/14 14:00:23',
-      //   address: '江苏省南京市玄武区中山东路189号',
-      //   pic: require(`../../../assets/images/pic.jpeg`)
-      // },
-      // {
-      //   id: '206',
-      //   name: '仙林1号',
-      //   type: '缺纸',
-      //   time: '2020/08/14 14:00:23',
-      //   address: '江苏省南京市玄武区中山东路189号',
-      //   pic: require(`../../../assets/images/pic.jpeg`)
-      // }]
     }
   },
   created() {

@@ -21,18 +21,36 @@ export default {
       type: String,
       default: 'calc(44vh - 38px)'
     },
-    chartData: {
-      type: Object,
-      // required: true
+    praise: {
+      type: Number,
+      required: true
+    },
+    bad: {
+      type: Number,
+      required: true
     }
   },
   data() {
     return {
       chart: null,
       usageData: [
-        { value: 128, name: '好评' },
-        { value: 80, name: '差评' }
+        { value: this.praise, name: '好评' },
+        { value: this.bad, name: '差评' }
       ]
+    }
+  },
+  watch: {
+    praise(newValue, oldValue) {
+      if (newValue) {
+        this.usageData[0].value = newValue;
+        this.initChart();
+      }
+    },
+    bad(newValue, oldValue) {
+      if (newValue) {
+        this.usageData[1].value = newValue;
+        this.initChart();
+      }
     }
   },
   mounted() {
@@ -80,9 +98,8 @@ export default {
                 currentData = item.value;
               }
             })
-            let c = parseInt((currentData / total) * 100);
+            const c = total === 0 ? 0 : parseInt((currentData / total) * 100);
             return '{b|' + name + '}{c|' + c + '%}';
-            // return name;
           },
           textStyle: {
             rich: {

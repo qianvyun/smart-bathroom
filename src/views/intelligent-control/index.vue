@@ -3,7 +3,7 @@
     <el-row :gutter="20">
       <el-col :span="3">
         <div class="project-list">
-          <project-list /><!-- :projectData="projectList"-->
+          <project-list @handleProject="handleProject" /><!-- :projectData="projectList"-->
         </div>
       </el-col>
       <el-col :span="21">
@@ -15,7 +15,7 @@
             <div :key="passageway.id" class="intelligent-control-item">
               <el-row :gutter="15">
                 <el-col :span="2">
-                  <div class="item-name">{{ passageway.name }}</div>
+                  <div class="item-name" @click="editName">{{ passageway.name }}</div>
                 </el-col>
                 <el-col :span="22">
                   <ul class="item-massage">
@@ -30,6 +30,14 @@
         </div>
       </el-col>
     </el-row>
+
+    <el-dialog :visible.sync="dialogVisible" title="修改名称" width="375px" custom-class="edit-name" center>
+      <el-input v-model="input" placeholder="输入修改名称" />
+      <div slot="footer">
+        <el-button type="primary" plain @click="dialogVisible=false">取消</el-button>
+        <el-button type="primary" @click="confirmEditName">确定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -40,20 +48,8 @@ export default {
   components: { ProjectList },
   data() {
     return {
-      projectList: [
-        {
-          id: '111',
-          name: '項目1'
-        },
-        {
-          id: '222',
-          name: '項目1'
-        },
-        {
-          id: '333',
-          name: '項目1'
-        }
-      ],
+      currentProjectId: '',
+      currentProject: '',
       passagewayList: [
         { id: 'line1', name: '线路1', current: '2.3A', voltage: '220v', state: true },
         { id: 'line2', name: '线路2', current: '2.3A', voltage: '220v', state: true },
@@ -63,12 +59,63 @@ export default {
         { id: 'line6', name: '线路6', current: '2.3A', voltage: '220v', state: false },
         { id: 'line7', name: '线路7', current: '2.3A', voltage: '220v', state: true },
         { id: 'line8', name: '线路8', current: '2.3A', voltage: '220v', state: true }
-      ]
+      ],
+      dialogVisible: false
+    }
+  },
+  methods: {
+    handleProject(project) {
+      this.currentProjectId = project.id;
+      this.currentProject = project;
+    },
+    editName() {
+      // todo 点击名称时的逻辑
+      this.dialogVisible = true
+    },
+    confirmEditName() {
+      // todo 修改名称的逻辑
     }
   }
 }
 </script>
 
+<style lang="scss">
+  .edit-name{
+    .el-dialog__header{
+      border-bottom: 1px solid #EFEFEF;
+    }
+    .el-dialog__title{
+      font-size: 16px;
+      color: #222A42;
+      font-width: 600;
+    }
+    .el-button {
+      width: 64px;
+      height: 28px;
+      line-height: 28px;
+      font-size: 12px;
+      border-radius: 8px;
+      text-align: center;
+      padding: 0;
+      vertical-align: middle;
+
+      &.is-plain {
+        background: #AEC3F2;
+        border-color: #AEC3F2;
+        color: #fff;
+
+        &:hover {
+          background: #2C6AF6;
+        }
+      }
+
+      & + .el-button {
+        margin-left: 16px;
+      }
+    }
+  }
+
+</style>
 <style lang="scss" scoped>
   .intelligent-control-container{
     width: 100%;
@@ -113,6 +160,7 @@ export default {
         color: #fff;
         border-radius: 6px;
         background: #1D8CF8;
+        cursor: pointer;
       }
       .item-massage{
         width: 100%;

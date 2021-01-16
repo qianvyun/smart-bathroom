@@ -1,5 +1,5 @@
 <template>
-  <div :id="id" :ref="id" :action="url" class="dropzone">
+  <div :id="id" :ref="id" :action="url" class="dropzone" :class="{mb: changeHeight}">
     <input type="file" name="file">
   </div>
 </template>
@@ -7,7 +7,6 @@
 <script>
 import Dropzone from 'dropzone'
 import 'dropzone/dist/dropzone.css'
-// import { getToken } from 'api/qiniu';
 
 Dropzone.autoDiscover = false
 
@@ -20,7 +19,8 @@ export default {
     },
     url: {
       type: String,
-      required: true
+      default: process.env.VUE_APP_BASE_API + '/file/upload'
+      // required: true
     },
     clickable: {
       type: Boolean,
@@ -52,7 +52,7 @@ export default {
     },
     maxFilesize: {
       type: Number,
-      default: 2
+      default: 500
     },
     maxFiles: {
       type: Number,
@@ -78,7 +78,8 @@ export default {
   data() {
     return {
       dropzone: '',
-      initOnce: true
+      initOnce: true,
+      changeHeight: false
     }
   },
   watch: {
@@ -101,6 +102,9 @@ export default {
       thumbnailHeight: this.thumbnailHeight,
       maxFiles: this.maxFiles,
       maxFilesize: this.maxFilesize,
+      headers: {
+        token: this.$store.getters.token
+      },
       dictRemoveFile: 'Remove',
       addRemoveLinks: this.showRemoveLink,
       acceptedFiles: this.acceptedFiles,
@@ -120,7 +124,7 @@ export default {
                           </div>
                         </div>`,
       init() {
-        const val = vm.defaultImg
+        /* const val = vm.defaultImg
         if (!val) return
         if (Array.isArray(val)) {
           if (val.length === 0) return
@@ -140,7 +144,7 @@ export default {
           mockFile.previewElement.classList.add('dz-success')
           mockFile.previewElement.classList.add('dz-complete')
           vm.initOnce = false
-        }
+        }*/
       },
       accept: (file, done) => {
         /* 七牛*/
@@ -154,20 +158,20 @@ export default {
         done()
       },
       sending: (file, xhr, formData) => {
-        const token = this.$store.getters.token;
-        const currentProject = JSON.parse(sessionStorage.getItem('currentProject'))
-        formData.append('token', token);
-        formData.append('id', currentProject.id);
-        switch (this.acceptedFiles) {
-          case 'video/*':
-            formData.append('vedioFile', file);
-            break;
-          case 'image/*':
-            formData.append('imgFile', file);
-            break;
-          default:
-            break;
-        }
+        // const token = this.$store.getters.token;
+        // const currentProject = JSON.parse(sessionStorage.getItem('currentProject'))
+        // formData.append('token', token);
+        // formData.append('id', currentProject.id);
+        // switch (this.acceptedFiles) {
+        //   case 'video/*':
+        //     formData.append('vedioFile', file);
+        //     break;
+        //   case 'image/*':
+        //     formData.append('imgFile', file);
+        //     break;
+        //   default:
+        //     break;
+        // }
         vm.initOnce = false
       }
     })
@@ -177,17 +181,31 @@ export default {
     }
 
     this.dropzone.on('success', file => {
-      vm.$emit('dropzone-success', file, vm.dropzone.element)
+      this.changeHeight = true;
+      let type = 'text';
+      switch (this.acceptedFiles) {
+        case 'video/*':
+          type = 'video';
+          break;
+        case 'image/*':
+          type = 'image';
+          break;
+        default:
+          type = 'text'
+          break;
+      }
+      const successUrl = JSON.parse(file.xhr.response);
+      vm.$emit('dropzone-file-url', successUrl.data, type)
     })
-    this.dropzone.on('addedfile', file => {
-      vm.$emit('dropzone-fileAdded', file)
-    })
-    this.dropzone.on('removedfile', file => {
-      vm.$emit('dropzone-removedFile', file)
-    })
-    this.dropzone.on('error', (file, error, xhr) => {
-      vm.$emit('dropzone-error', file, error, xhr)
-    })
+    // this.dropzone.on('addedfile', file => {
+    //   vm.$emit('dropzone-fileAdded', file)
+    // })
+    // this.dropzone.on('removedfile', file => {
+    //   vm.$emit('dropzone-removedFile', file)
+    // })
+    // this.dropzone.on('error', (file, error, xhr) => {
+    //   vm.$emit('dropzone-error', file, error, xhr)
+    // })
     this.dropzone.on('successmultiple', (file, error, xhr) => {
       vm.$emit('dropzone-successmultiple', file, error, xhr)
     })
@@ -208,8 +226,8 @@ export default {
       if (items[0].kind === 'file') {
         this.dropzone.addFile(items[0].getAsFile())
       }
-    },
-    initImages(val) {
+    }
+    /* initImages(val) {
       if (!val) return
       if (Array.isArray(val)) {
         val.map((v, i) => {
@@ -227,14 +245,14 @@ export default {
         mockFile.previewElement.classList.add('dz-success')
         mockFile.previewElement.classList.add('dz-complete')
       }
-    }
+    }*/
 
   }
 }
 </script>
 <style lang="scss">
   .dropzone{
-
+    /*max-height: 42px;*/
     .dz-message{
       margin: 0;
     }
@@ -246,7 +264,7 @@ export default {
       padding: 0 24px;
       width: 650px;
       height: 40px;
-      line-height: 40px;
+      line-height: 38px;
       border-radius: 6px;
       border: 1px solid #D2D5E1;
       background: #FAFCFE;
@@ -269,12 +287,14 @@ export default {
     }
     .dz-preview{
       border-radius: 6px;
-      border: 1px solid #D2D5E1;
+      /*border: 1px solid #D2D5E1;*/
       background: #FAFCFE;
       margin: 10px 10px 0 0;
       padding: 5px;
     }
-
+  }
+  .mb{
+    margin-bottom: 120px;
   }
 </style>
 <style lang="scss" scoped>
@@ -282,7 +302,7 @@ export default {
     padding: 0 24px;
     width: 650px;
     min-height: 42px;
-    /*height: 42px;*/
+    height: 42px;
     /*line-height: 42px;*/
     /*border-radius: 6px;*/
     border: none;
@@ -293,93 +313,4 @@ export default {
     }
 
   }
-
-    /*.dropzone {
-        border: 2px solid #E5E5E5;
-        font-family: 'Roboto', sans-serif;
-        color: #777;
-        transition: background-color .2s linear;
-        padding: 5px;
-    }
-
-    .dropzone:hover {
-        background-color: #F6F6F6;
-    }
-
-    i {
-        color: #CCC;
-    }
-
-    .dropzone .dz-image img {
-        width: 100%;
-        height: 100%;
-    }
-
-    .dropzone input[name='file'] {
-        display: none;
-    }
-
-    .dropzone .dz-preview .dz-image {
-        border-radius: 0px;
-    }
-
-    .dropzone .dz-preview:hover .dz-image img {
-        transform: none;
-        filter: none;
-        width: 100%;
-        height: 100%;
-    }
-
-    .dropzone .dz-preview .dz-details {
-        bottom: 0px;
-        top: 0px;
-        color: white;
-        background-color: rgba(33, 150, 243, 0.8);
-        transition: opacity .2s linear;
-        text-align: left;
-    }
-
-    .dropzone .dz-preview .dz-details .dz-filename span, .dropzone .dz-preview .dz-details .dz-size span {
-        background-color: transparent;
-    }
-
-    .dropzone .dz-preview .dz-details .dz-filename:not(:hover) span {
-        border: none;
-    }
-
-    .dropzone .dz-preview .dz-details .dz-filename:hover span {
-        background-color: transparent;
-        border: none;
-    }
-
-    .dropzone .dz-preview .dz-remove {
-        position: absolute;
-        z-index: 30;
-        color: white;
-        margin-left: 15px;
-        padding: 10px;
-        top: inherit;
-        bottom: 15px;
-        border: 2px white solid;
-        text-decoration: none;
-        text-transform: uppercase;
-        font-size: 0.8rem;
-        font-weight: 800;
-        letter-spacing: 1.1px;
-        opacity: 0;
-    }
-
-    .dropzone .dz-preview:hover .dz-remove {
-        opacity: 1;
-    }
-
-    .dropzone .dz-preview .dz-success-mark, .dropzone .dz-preview .dz-error-mark {
-        margin-left: -40px;
-        margin-top: -50px;
-    }
-
-    .dropzone .dz-preview .dz-success-mark i, .dropzone .dz-preview .dz-error-mark i {
-        color: white;
-        font-size: 5rem;
-    }*/
 </style>

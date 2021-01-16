@@ -21,16 +21,34 @@ export default {
       type: String,
       default: 'calc(44vh - 38px)'
     },
-    chartData: {
-      type: Object,
-      // required: true
+    dateList: {
+      type: Array,
+      required: true
+    },
+    humanData: {
+      type: Array,
+      required: true
     }
   },
   data() {
     return {
       chart: null,
-      xAxisData: ['7/3', '7/4', '7/5', '7/6', '7/7', '7/8', '7/9', '7/10', '7/11'],
-      humanData: [16, 15, 22, 26, 34, 43, 28, 12, 34]
+      xAxisData: this.dateList,
+      humanSum: this.humanData
+    }
+  },
+  watch: {
+    dateList(newValue, oldVale) {
+      if (newValue) {
+        this.xAxisData = newValue;
+        this.initChart();
+      }
+    },
+    humanData(newValue, oldVale) {
+      if (newValue) {
+        this.humanSum = newValue;
+        this.initChart();
+      }
     }
   },
   mounted() {
@@ -129,7 +147,7 @@ export default {
           }
         ],
         series: [{
-          data: this.humanData,
+          data: this.humanSum,
           type: 'line',
           // 线上点的标记
           symbol: 'circle',

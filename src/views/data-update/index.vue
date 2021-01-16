@@ -13,15 +13,15 @@
           </div>
           <div class="data-update-item data-update-video">
             <div class="title">更新视频文件</div>
-            <dropzone id="videoDropzone" default-msg="导入视频文件" accepted-files="video/*" :url="url" @dropzone-removedFile="dropzoneR" @dropzone-success="dropzoneS" />
+            <dropzone :id="'videoDropzone'" default-msg="导入视频文件" accepted-files="video/*" @dropzone-file-url="uploadFile" @dropzone-removedFile="dropzoneR" @dropzone-success="dropzoneS" />
           </div>
           <div class="data-update-item data-update-image">
             <div class="title">更新图片文件</div>
-            <dropzone id="imageDropzone" default-icon="iconpic" default-msg="导入图片" accepted-files="image/*" :url="url" @dropzone-removedFile="dropzoneR" @dropzone-success="dropzoneS" />
+            <dropzone :id="'imageDropzone'" default-icon="iconpic" default-msg="导入图片" accepted-files="image/*" @dropzone-file-url="uploadFile" @dropzone-removedFile="dropzoneR" @dropzone-success="dropzoneS" />
           </div>
           <div class="data-update-item data-update-word">
             <div class="title">更新文字新闻</div>
-            <dropzone id="wordDropzone" default-icon="iconword" default-msg="导入文字信息" accepted-files="image/*" :url="url" @dropzone-removedFile="dropzoneR" @dropzone-success="dropzoneS" />
+            <dropzone :id="'wordDropzone'" default-icon="iconword" default-msg="导入文字信息" accepted-files=".doc,.docx,.txt" @dropzone-file-url="uploadFile" @dropzone-removedFile="dropzoneR" @dropzone-success="dropzoneS" />
           </div>
         </div>
       </el-col>
@@ -32,6 +32,17 @@
 <script>
 import ProjectList from '@/components/ProjectList/index'
 import Dropzone from '@/components/Dropzone/index'
+import { uploadImgAndVideo, uploadTxt, AddToImg } from '@/api/upload'
+const defaultUploadTxt = {
+  id: '',
+  liveUrl: '',
+  text: ''
+}
+const defaultUploadImgAndVideo = {
+  id: '',
+  imgFile: [],
+  videoFile: ''
+}
 export default {
   name: 'DataUpdate',
   components: { Dropzone, ProjectList },
@@ -40,21 +51,20 @@ export default {
       // 当前项目的id
       currentProjectId: '',
       currentProject: null,
-      url: process.env.VUE_APP_BASE_API + '/toilet/upload'
-      // projectList: [
-      //   {
-      //     id: '111',
-      //     name: '項目1'
-      //   },
-      //   {
-      //     id: '222',
-      //     name: '項目1'
-      //   },
-      //   {
-      //     id: '333',
-      //     name: '項目1'
-      //   }
-      // ]
+      uploadTxt: Object.assign({}, defaultUploadTxt),
+      uploadImgAndVideo: Object.assign({}, defaultUploadImgAndVideo)
+      // url: process.env.VUE_APP_BASE_API + '/toilet/upload'
+    }
+  },
+  computed: {
+    currentp() {
+      return this.$store.getters.currentPageItem
+    }
+  },
+  watch: {
+    currentp(toilet) {
+      this.currentProjectId = toilet.id;
+      this.currentProject = toilet;
     }
   },
   methods: {
@@ -67,6 +77,40 @@ export default {
     handleProject(project) {
       this.currentProjectId = project.id;
       this.currentProject = project;
+    },
+    uploadFile(fileUrl, type) {
+      switch (type) {
+        case 'image':
+          this.uploadImgAndVideo.id = this.currentProjectId;
+          this.uploadImgAndVideo.imgFile.push(fileUrl);
+          this.upload(this.uploadImgAndVideo, type);
+          break
+        case 'video':
+          this.uploadImgAndVideo.id = this.currentProjectId;
+          this.uploadImgAndVideo.videoFile = fileUrl;
+          this.upload(this.uploadImgAndVideo, type);
+          break
+        default:
+          this.uploadTxt.id = this.currentProjectId;
+          this.uploadTxt.text = fileUrl;
+          this.upload(this.uploadTxt, type);
+          break
+      }
+      // console.log(fileUrl, type)
+    },
+    async upload(data, type) {
+      if (type === 'text') {
+        await uploadTxt(data)
+      } else if (type === 'video') {
+        await uploadImgAndVideo(data)
+      } else if (type === 'image') {
+        await AddToImg(data);
+      }
+      this.$notify({
+        title: '文件上传成功',
+        dangerouslyUseHTMLString: true,
+        type: 'success'
+      });
     }
   }
 }
@@ -82,11 +126,15 @@ export default {
   font-family: NotoSansCJKRegular;
   font-size: 14px;
 }
+.project-list{
+  overflow-y: auto;
+}
 .data-update-content-warp{
   background: #fff;
   border-radius: 6px;
   height: calc(100vh - 128px);
   padding: 0 40px;
+  overflow-y: auto;
   .data-update-content-heard{
     padding-top: 20px;
     height: 42px;

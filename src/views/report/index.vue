@@ -3,7 +3,7 @@
     <el-row :gutter="20">
       <el-col :span="3">
         <div class="project-list">
-          <project-list /><!-- :projectData="projectList"-->
+          <project-list @handleProject="handleProject" />
         </div>
       </el-col>
       <el-col :span="21">
@@ -18,7 +18,7 @@
                   </div>
                 </div>
                 <div class="project-content-chart">
-                  <report-traffic-chart />
+                  <report-traffic-chart :date-list="trafficData.dateList" :human-data="trafficData.humanData" />
                 </div>
               </div>
             </el-col>
@@ -27,11 +27,11 @@
                 <div class="project-content-heard clear">
                   <div class="title"><i class="icon iconfont iconpie" />评价统计</div>
                   <div class="project-content-granularity">
-                    <time-granularity-select @granularity="getStatisticReport" />
+                    <time-granularity-select @granularity="getEvaluateReport" />
                   </div>
                 </div>
                 <div class="project-content-chart">
-                  <report-statistic-chart />
+                  <report-statistic-chart :praise="evaluate.praise" :bad="evaluate.bad" />
                 </div>
               </div>
             </el-col>
@@ -60,41 +60,122 @@ import ReportTrafficChart from '@/views/report/components/report-traffic-chart'
 import ReportStatisticChart from '@/views/report/components/report-statistic-chart'
 import ReportDeviceChart from '@/views/report/components/report-device-chart'
 import ProjectList from '@/components/ProjectList/index'
+import {
+  getTrafficStatisticsDayData,
+  getTrafficStatisticsMonthData,
+  getTrafficStatisticsYearData,
+  getEvaluateStatisticsData
+} from '@/api/report'
 export default {
   name: 'Report',
   components: { ProjectList, ReportDeviceChart, ReportStatisticChart, ReportTrafficChart, TimeGranularitySelect },
   data() {
     return {
-      projectList: [
-        {
-          id: '111',
-          name: '項目1'
-        },
-        {
-          id: '222',
-          name: '項目1'
-        },
-        {
-          id: '333',
-          name: '項目1'
-        }
-      ]
+      // 当前项目的id
+      currentProjectId: '',
+      currentProject: null,
+      trafficData: {
+        dateList: [],
+        humanData: []
+      },
+      evaluate: {
+        praise: 0,
+        bad: 0
+      }
+    }
+  },
+  computed: {
+    currentp() {
+      return this.$store.getters.currentPageItem
     }
   },
   watch: {
-    activeName(val) {
-      this.$router.push(`${this.$route.path}?tab=${val}`)
+    currentp(toilet) {
+      this.currentProjectId = toilet.id;
+      this.currentProject = toilet;
+      this.getTrafficReport('year');
+      this.getEvaluateReport('year');
     }
   },
   created() {
 
   },
+  mounted() {
+    this.getTrafficReport('year');
+    this.getEvaluateReport('year');
+  },
   methods: {
-    getTrafficReport(val) {
-      console.log(val)
+    handleProject(project) {
+      this.currentProjectId = project.id;
+      this.currentProject = project;
+      this.getTrafficReport('year');
+      this.getEvaluateReport('year');
     },
-    getStatisticReport(val) {
-      console.log(val)
+    async getTrafficReport(val) {
+      const requestData = {
+        id: this.currentProjectId
+      };
+      const today = new Date();
+      let data = {};
+      this.trafficData = {
+        dateList: [],
+        humanData: []
+      };
+      switch (val) {
+        case 'day':
+          data = await getTrafficStatisticsDayData(requestData);
+          for (let i = 1; i <= today.getHours(); i++) {
+            this.trafficData.dateList.push(i);
+          }
+          for (let i = 0; i < today.getHours(); i++) {
+            this.trafficData.humanData.push(data.data[i].personSum);
+          }
+          break;
+        case 'month':
+          // requestData.queryMonth = new Date().getDate();
+          requestData.queryDay = '';
+          data = await getTrafficStatisticsMonthData(requestData);
+          for (let i = 1; i <= today.getDate(); i++) {
+            this.trafficData.dateList.push(i);
+          }
+          for (let i = 0; i < today.getDate(); i++) {
+            this.trafficData.humanData.push(data.data[i].personSum);
+          }
+          break;
+        default:
+          // requestData.queryMonth = new Date().getDate();
+          requestData.queryMonth = '1';
+          data = await getTrafficStatisticsYearData(requestData);
+          this.trafficData.dateList = Object.keys(data.data).reverse();
+          Object.values(data.data).forEach(item => {
+            this.trafficData.humanData.unshift(item.personSum);
+          })
+          break;
+      }
+    },
+    async getEvaluateReport(val) {
+      const requestData = {
+        toiletId: this.currentProjectId, // 项目id
+        queryDay: '', // 查询今日，值固定为1
+        queryMonth: '', // 查询今月，值固定为1
+        queryYear: '' // 查询今年，值固定为1
+      }
+      this.evaluate.praise = 0;
+      this.evaluate.bad = 0;
+      switch (val) {
+        case 'day':
+          requestData.queryDay = '1';
+          break;
+        case 'month':
+          requestData.queryMonth = '1';
+          break;
+        default:
+          requestData.queryYear = '1';
+          break;
+      }
+      const data = await getEvaluateStatisticsData(requestData);
+      this.evaluate.praise = Number(data.data.value1);
+      this.evaluate.bad = Number(data.data.value2);
     },
     getDeviceReport(val) {
       console.log(val)

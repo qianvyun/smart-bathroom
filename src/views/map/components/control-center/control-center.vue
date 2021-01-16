@@ -20,7 +20,7 @@
         </div>
         <div class="chart-warp">
           <div class="chart-box-top"><span /></div>
-          <hygiene />
+          <hygiene :toilet-id="toiletDetailMsg.toiletId" />
         </div>
       </div>
       <div class="control-center-middle">

@@ -1,6 +1,5 @@
 <template>
   <div :class="className" :style="{height:height,width:width}" />
-
 </template>
 
 <script>
@@ -34,8 +33,8 @@ export default {
       chart: null,
       usageData: [
         { value: 128, name: 'a' },
-        { value: 80, name: 'b' },
-        { value: 80, name: 'c' }
+        { value: 0, name: 'b' },
+        { value: 0, name: 'c' }
       ]
     }
   },

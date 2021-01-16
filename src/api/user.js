@@ -30,3 +30,11 @@ export function toiletList(data) {
     data
   })
 }
+
+export function projectList(data) {
+  return request({
+    url: '/project/selectlist',
+    method: 'post',
+    data
+  })
+}

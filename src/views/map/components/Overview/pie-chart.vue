@@ -36,8 +36,8 @@ export default {
     return {
       chart: null,
       usageData: [
-        { value: 128, name: '女性' },
-        { value: 80, name: '男性' }
+        { value: this.chartData.femalePersonSum, name: '女性' },
+        { value: this.chartData.malePersonSum, name: '男性' }
       ]
     }
   },

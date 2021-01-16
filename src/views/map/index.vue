@@ -20,7 +20,10 @@
         <li class="toolbar-item" @click="overviewClick"><i class="icon iconfont iconoverview" /></li>
         <li class="toolbar-item add" :class="{'is-active':isHandleMapCoordinate}" @click="addBathroomClick"><i class="icon iconfont iconadd-to" /></li>
         <li class="toolbar-item add" :class="{'is-active':isHandleMarker}" @click="deleteBathroomClick"><i class="icon iconfont iconreduce" /></li>
-        <li class="toolbar-item"><i class="icon iconfont iconsearch" /></li>
+        <li class="toolbar-item search">
+          <!--          <i v-if="isShowSearch" class="icon iconfont iconsearch" />-->
+          <header-search id="header-search" :is-show-ever="isShowSearch" class="right-menu-item" />
+        </li>
       </ul>
     </div>
     <div class="right-toolbar">
@@ -51,7 +54,7 @@
     </el-dialog>
 
     <el-dialog :visible.sync="isShowOverviewVisible" :close-on-click-modal="false" :modal="false" width="430px" custom-class="overview-modal">
-      <overview :city="center" />
+      <overview :city="center" :project="currentProject" />
     </el-dialog>
 
     <create-bathroom :place="coordinate" :is-show-add-bathroom-visible="isShowAddBathroomVisible" @close-create-model="closeCreateModel" />
@@ -66,13 +69,16 @@ import screenfull from 'screenfull'
 import AlarmModal from '@/views/map/components/alarm-modal'
 import Overview from '@/views/map/components/Overview/Overview'
 import { getAlarmData, getToiletDetails, deleteToilet } from '@/api/map'
+import { projectList } from '@/api/user'
 import CreateBathroom from '@/views/map/components/create-bathroom'
+import HeaderSearch from '@/components/HeaderSearch/index'
 
 export default {
-  components: { CreateBathroom, Overview, AlarmModal, controlCenter },
+  components: { HeaderSearch, CreateBathroom, Overview, AlarmModal, controlCenter },
   data() {
     return {
       visible: false,
+      isShowSearch: false,
       // 地图缩放等级
       zoom: 12,
       // 地图中心经纬度
@@ -124,13 +130,13 @@ export default {
       projectData: [],
       // 树的默认数据
       defaultProps: {
-        children: 'toiletList',
-        label: 'placeName'
+        children: 'toilets',
+        label: 'name'
       },
       // 所有厕所的集合
       placeList: [],
-      // 当前项目的id
-      currentProjectId: '',
+      // 当前项目
+      currentToilet: '',
       // 告警信息
       alarmData: null,
       // 是否全屏
@@ -143,21 +149,31 @@ export default {
       coordinate: '',
       // 是否显示添加厕所界面
       isShowAddBathroomVisible: false,
-      timer: ''
+      timer: '',
+      // 总项目列表
+      totalProjectList: [],
+      currentProject: null
     };
   },
   computed: {
     ...mapGetters([
       'sidebar',
       'projectList'
-    ])
+    ]),
+    currentp() {
+      return this.$store.getters.currentPageItem
+    }
+  },
+  watch: {
+    currentp(toilet) {
+      this.currentToilet = toilet;
+      this.zoom = 16;
+      this.setMapCenter(toilet);
+      this.getCurrentProject(this.currentToilet.id);
+    }
   },
   created() {
-    this.init()
-    // this.tiianqi()
-  },
-  mounted() {
-
+    this.init();
   },
   beforeDestroy() {
     this.destroy()
@@ -177,6 +193,7 @@ export default {
       this.projectData = JSON.parse(JSON.stringify(this.projectList));
       this.formatPlaceList(this.projectData);
       this.setMapCenter();
+      this.getprojectList();
     },
     // 格式所有的厕所 平铺
     formatPlaceList(arr) {
@@ -199,12 +216,12 @@ export default {
       } else {
         this.center = project.place;
       }
-      this.currentProjectId = project.id;
+      this.currentToilet = project;
       this.getAlarmData();
     },
     // 显示隐藏菜单
     toggleClick() {
-      if (this.isHandleMapCoordinate) {
+      if (!this.isHandleMapCoordinate) {
         this.isActiveHamburger = !this.isActiveHamburger;
         this.$store.dispatch('app/toggleSideBar')
       }
@@ -228,7 +245,8 @@ export default {
     // 获取告警数据
     async getAlarmData() {
       const requestData = {
-        toiletId: this.currentProjectId
+        toiletId: this.currentToilet.id
+        // operationTypeList: [3]
       }
       const res = await getAlarmData(requestData);
       this.alarmData = res.data;
@@ -256,6 +274,26 @@ export default {
           type: 'warning'
         })
         return false
+      }
+    },
+    async getprojectList() {
+      const res = await projectList()
+      this.totalProjectList = res.data ? res.data : [];
+      this.getCurrentProject(this.currentToilet.id);
+    },
+    getCurrentProject(toiletId) {
+      for (let i = 0; i < this.totalProjectList.length; i++) {
+        const project = this.totalProjectList[i];
+        for (let j = 0; j < project.toilets.length; j++) {
+          const toilet = project.toilets[j];
+          if (toilet.id === toiletId) {
+            this.currentProject = project
+            break;
+          }
+        }
+        if (this.currentProject.id === project.id) {
+          break
+        }
       }
     },
     deleteToilet(id) {
@@ -518,6 +556,23 @@ export default {
         }
       }
 
+    }
+  }
+  .toolbar-item.search{
+    display: inline-block;
+    width: auto !important;
+    .header-search{
+      height: 40px;
+      line-height: 40px;
+      border: none;
+      padding: 0 8px;
+      &.show .header-search-select {
+        margin-top: -20px;
+      }
+      i{
+        font-size: 24px;
+        color: #1D8CF8;
+      }
     }
   }
 </style>

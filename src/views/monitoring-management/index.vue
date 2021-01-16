@@ -3,7 +3,7 @@
     <el-row :gutter="20">
       <el-col :span="3">
         <div class="project-list">
-          <project-list /><!-- :projectData="projectList"-->
+          <project-list @handleProject="handleProject" />
         </div>
       </el-col>
       <el-col :span="21">
@@ -19,18 +19,12 @@
           <div class="monitoring-management-content">
             <ul>
               <template v-for="monitor of showMonitorList">
-                <li :key="monitor.id"><!---->
+                <li :key="monitor">
                   <div class="monitoring">
-                    <object :id="`StrobeMediaPlaybackOne${monitor.id}`" type="application/x-shockwave-flash" name="StrobeMediaPlayback" align="middle" data="swfs/StrobeMediaPlayback.swf" width="270" height="232">
-                      <param name="quality" value="high">
-                      <param name="bgcolor" value="#000000">
-                      <param name="allowscriptaccess" value="sameDomain">
-                      <param name="allowfullscreen" value="true">
-                      <param name="flashvars" :value="monitorValue(monitor.url)">
-                    </object>
-                    监控内容
+                    <!--监控内容-->
+                    <monitor-player :url="monitor" />
                   </div>
-                  <span><i class="icon iconfont icondelete" /></span><!--{{ monitor.deviceName }}-->
+                  <span @click="delMonitor(monitor)"><i class="icon iconfont icondelete" /></span><!--{{ monitor.deviceName }}-->
                 </li>
               </template>
             </ul>
@@ -39,30 +33,24 @@
       </el-col>
     </el-row>
 
-    <el-dialog :visible.sync="dialogVisible" title="添加监控" custom-class="create-dialpg">
+    <el-dialog :visible.sync="dialogVisible" title="添加监控" width="460px" custom-class="create-dialog">
       <el-checkbox-group v-model="monitorCheckList">
         <ul class="dialog-monitor">
           <template v-for="monitor of queryMonitorList">
-            <li :key="monitor.id">
-              <el-checkbox :label="monitor.id" />
+            <li :key="monitor.hls">
+              <el-checkbox :label="monitor.hls" />
               <div class="monitoring-warp">
                 <div class="monitoring">
-                  <object :id="`StrobeMediaPlaybackOne${monitor.id}`" type="application/x-shockwave-flash" name="StrobeMediaPlayback" align="middle" data="swfs/StrobeMediaPlayback.swf" width="134" height="134">
-                    <param name="quality" value="high">
-                    <param name="bgcolor" value="#000000">
-                    <param name="allowscriptaccess" value="sameDomain">
-                    <param name="allowfullscreen" value="true">
-                    <param name="flashvars" :value="monitorValue(monitor.url)">
-                  </object>
+                  <img :src="monitor.coverUrl" alt="">
                 </div>
-                <p>{{ monitor.name }}</p>
+                <!-- <p>{{ monitor.name }}</p>-->
               </div>
             </li>
           </template>
         </ul>
       </el-checkbox-group>
       <div slot="footer">
-        <el-button @click="dialogVisible=false">取消</el-button>
+        <el-button type="primary" plain @click="dialogVisible=false">取消</el-button>
         <el-button type="primary" @click="confirmMonitor">确定</el-button>
       </div>
     </el-dialog>
@@ -71,55 +59,166 @@
 
 <script>
 import ProjectList from '@/components/ProjectList/index'
+import { getLiveList, updateLives, delLives } from '@/api/monitor'
+import MonitorPlayer from '@/components/hls/index'
+import { getToiletInfo } from '@/api/map'
 export default {
   name: 'MonitoringManagement',
-  components: { ProjectList },
+  components: { MonitorPlayer, ProjectList },
   data() {
     return {
+      // 当前项目的id
+      currentProjectId: '',
+      currentProject: null,
       dialogVisible: false,
-      // 项目列表
-      projectList: [
-        {
-          id: '111',
-          name: '項目1'
-        },
-        {
-          id: '222',
-          name: '項目1'
-        },
-        {
-          id: '333',
-          name: '項目1'
-        }
-      ],
+      // src: 'https://cmgw-vpc.lechange.com:8890/LCO/6F0F566YAZ63C1C/0/1/20201119T084206/e52f22b6bf7ccb734fd26aff3ca7c78e.m3u8?proto=https',
       // 展示的监控
       showMonitorList: [],
+      allMonitorList: [],
       // 当前项目的所有监控
-      queryMonitorList: [],
       monitorCheckList: []
     }
   },
   computed: {
-    monitorValue(url) {
-      return `src=${url}&streamType=vod&autoPlay=false&controlBarAutoHide=true&controlBarPosition=bottom`
+    // monitorValue(url) {
+    //   return `src=${url}&streamType=vod&autoPlay=false&controlBarAutoHide=true&controlBarPosition=bottom`
+    // }
+    // 当前项目的所有监控
+    queryMonitorList() {
+      const [currentToilet] = this.allMonitorList.filter(item => item.id === this.currentProjectId);
+      const monitorList = [];
+      if (currentToilet) {
+        currentToilet.lives.forEach(item => {
+          monitorList.push(item.streams[0]);
+        })
+      }
+      return monitorList;
+    },
+    currentp() {
+      return this.$store.getters.currentPageItem
     }
+  },
+  watch: {
+    currentp(toilet) {
+      this.currentProjectId = toilet.id;
+      this.currentProject = toilet;
+      this.getToiletMonitor(this.currentProjectId);
+    }
+  },
+  created() {
+    this.getMonitorList();
+  },
+  mounted() {
+    this.getToiletMonitor(this.currentProjectId);
   },
   methods: {
     handleAddMonitor() {
       this.dialogVisible = true
     },
-    confirmMonitor() {
-      this.dialogVisible = false
+    async confirmMonitor() {
+      if (!this.monitorCheckList || this.monitorCheckList.length === 0) {
+        this.$message.error('请选择监控！');
+        return;
+      }
+      if (this.monitorCheckList.length > 4) {
+        this.$message.error('不能超过4个');
+        return;
+      }
+      if (JSON.stringify(this.monitorCheckList) === JSON.stringify(this.showMonitorList)) {
+        this.$message.error('选择监控没有变化，请重新选择');
+        return;
+      }
+      for (let i = 0; i < this.showMonitorList.length; i++) {
+        await this.delMonitor(this.showMonitorList[i], false);
+      }
+      const requestData = {
+        id: this.currentProjectId,
+        livesUrl: this.monitorCheckList
+      }
+      await updateLives(requestData);
+      await this.getToiletMonitor(this.currentProjectId);
+      this.dialogVisible = false;
+    },
+    async getToiletMonitor(id) {
+      const requestData = {
+        id: id
+      }
+      const data = await getToiletInfo(requestData);
+      this.showMonitorList = data.data.livesUrl;
+    },
+    handleProject(project) {
+      this.currentProjectId = project.id;
+      this.currentProject = project;
+      this.getToiletMonitor(this.currentProjectId);
+    },
+    async getMonitorList() {
+      // const requestData = {
+      //   toiletId: id
+      // }
+      const res = await getLiveList();
+      this.allMonitorList = res.data;
+    },
+    async delMonitor(url, notify = true) {
+      const requestData = {
+        id: this.currentProjectId,
+        liveUrl: url
+      }
+      await delLives(requestData);
+      for (let i = 0; i < this.showMonitorList.length; i++) {
+        if (this.showMonitorList[i] === url) {
+          this.showMonitorList.splice(i, 1)
+        }
+      }
+      if (notify) {
+        this.$notify({
+          title: '监控删除成功！',
+          dangerouslyUseHTMLString: true,
+          type: 'success'
+        });
+      }
     }
   }
 }
 </script>
 <style lang="scss">
   .monitoring-management-container{
-    .el-button--primary{
-      background: #369AFE;
-      border-color: #369AFE;
+    .create-dialog{
+      .el-dialog__header{
+        font-size: 16px;
+        color: #222A42;
+        font-width: 600;
+        text-align: center;
+        border-bottom: 1px solid #EFEFEF;
+      }
+      .el-dialog__body{
+        padding: 30px 40px;
+      }
+      .el-button {
+        width: 64px;
+        height: 28px;
+        line-height: 28px;
+        font-size: 12px;
+        border-radius: 8px;
+        text-align: center;
+        padding: 0;
+        vertical-align: middle;
+
+        &.is-plain {
+          background: #AEC3F2;
+          border-color: #AEC3F2;
+          color: #fff;
+
+          &:hover {
+            background: #2C6AF6;
+          }
+        }
+
+        & + .el-button {
+          margin-left: 16px;
+        }
+      }
     }
+
     .el-checkbox__label{
       display: none;
     }
@@ -169,19 +268,25 @@ export default {
       }
     }
     .monitoring-management-content{
-      width: 800px;
+      /*width: 800px;*/
       li{
         float: left;
         position: relative;
         .monitoring{
-          width: 270px;
-          height: 232px;
+          width: 400px;
+          height: 300px;
           margin-top: 50px;
           margin-right: 100px;
           border-radius: 10px;
           overflow: hidden;
           background: #369AFE;
           box-shadow: 0px 2px 4px 0px rgba(28, 41, 90, 0.04);
+          > img{
+            width: 100%;
+          }
+        }
+        &:nth-of-type(2n) .monitoring{
+          margin-right: 0;
         }
         span{
           position: absolute;
@@ -210,6 +315,10 @@ export default {
       border: 1px solid #369AFE;
       border-radius: 6px;
       overflow: hidden;
+      > img{
+        width: 100%;
+        height: 100%;
+      }
     }
     p{
       height: 42px;
@@ -217,6 +326,15 @@ export default {
       color: rgba(34, 42, 66, .8);
       font-size: 14px;
       text-align: center;
+    }
+  }
+  .dialog-monitor{
+    li{
+      display: inline-block;
+      margin-bottom: 30px;
+      &:nth-of-type(2n) .monitoring-warp{
+        margin-right: 0;
+      }
     }
   }
 </style>

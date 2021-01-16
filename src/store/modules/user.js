@@ -9,7 +9,8 @@ const state = {
   introduction: '',
   roles: [],
   userMassage: '',
-  projectList: null
+  projectList: null,
+  currentPageItem: null
 }
 
 const mutations = {
@@ -39,6 +40,10 @@ const mutations = {
   SET_PROJECT_LIST: (state, projectList) => {
     state.projectList = projectList
     sessionStorage.setItem('projectList', JSON.stringify(projectList))
+  },
+  SET_CURRENT_PAGE_ITEM: (state, project) => {
+    state.currentPageItem = project
+    sessionStorage.setItem('currentProject', JSON.stringify(project))
   }
 }
 
@@ -112,6 +117,7 @@ const actions = {
   // get user info
   getProjectList({ commit, state }) {
     return new Promise((resolve, reject) => {
+      // projectList().then(response => {
       toiletList().then(response => {
         const { data } = response
 
@@ -163,6 +169,10 @@ const actions = {
       removeToken()
       resolve()
     })
+  },
+
+  getCurrentPageItem({ commit }, data) {
+    commit('SET_CURRENT_PAGE_ITEM', data)
   },
 
   // dynamically modify permissions

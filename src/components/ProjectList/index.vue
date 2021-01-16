@@ -3,7 +3,7 @@
     <ul>
       <li class="project-title">项目名称</li>
       <template v-for="(project,index) of projects">
-        <li :key="project.id" class="item" :class="{active: currentSort === index}" @click="handleProject(index,project)">{{ project.placeName }}</li>
+        <li :key="project.id" class="item" :class="{active: currentSort === index}" @click="handleProject(index,project)">{{ project.name }}</li>
       </template>
     </ul>
   </div>
@@ -30,8 +30,18 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'projectList'
+      'projectList',
+      'currentPageItem'
     ])
+  },
+  watch: {
+    currentPageItem(v) {
+      this.projects.forEach((item, index) => {
+        if (item.id === v.id) {
+          this.currentSort = index
+        }
+      })
+    }
   },
   created() {
     this.handleProject(0, this.projects[0]);

@@ -12,7 +12,7 @@
       class="header-search-select"
       @change="change"
     >
-      <el-option v-for="item in options" :key="item.path" :value="item" :label="item.title.join(' > ')" />
+      <el-option v-for="item in options" :key="item.id" :value="item" :label="item.name" />
     </el-select>
   </div>
 </template>
@@ -21,7 +21,6 @@
 // fuse is a lightweight fuzzy-search module
 // make search results more in line with expectations
 import Fuse from 'fuse.js'
-import path from 'path'
 
 export default {
   name: 'HeaderSearch',
@@ -41,13 +40,13 @@ export default {
     }
   },
   computed: {
-    routes() {
-      return this.$store.getters.permission_routes
+    projectList() {
+      return this.$store.getters.projectList
     }
   },
   watch: {
-    routes() {
-      this.searchPool = this.generateRoutes(this.routes)
+    projectList(list) {
+      this.searchPool = list;
     },
     searchPool(list) {
       this.initFuse(list)
@@ -63,7 +62,7 @@ export default {
     }
   },
   mounted() {
-    this.searchPool = this.generateRoutes(this.routes)
+    this.searchPool = this.projectList;
   },
   methods: {
     click() {
@@ -80,12 +79,12 @@ export default {
       this.show = false
     },
     change(val) {
-      this.$router.push(val.path)
+      this.$store.dispatch('user/getCurrentPageItem', val);
       this.search = ''
       this.options = []
-      this.$nextTick(() => {
-        this.show = false
-      })
+      // this.$nextTick(() => {
+      //   this.show = false
+      // })
     },
     initFuse(list) {
       this.fuse = new Fuse(list, {
@@ -96,47 +95,10 @@ export default {
         maxPatternLength: 32,
         minMatchCharLength: 1,
         keys: [{
-          name: 'title',
+          name: 'name',
           weight: 0.7
-        }, {
-          name: 'path',
-          weight: 0.3
         }]
       })
-    },
-    // Filter out the routes that can be displayed in the sidebar
-    // And generate the internationalized title
-    generateRoutes(routes, basePath = '/', prefixTitle = []) {
-      let res = []
-
-      for (const router of routes) {
-        // skip hidden router
-        if (router.hidden) { continue }
-
-        const data = {
-          path: path.resolve(basePath, router.path),
-          title: [...prefixTitle]
-        }
-
-        if (router.meta && router.meta.title) {
-          data.title = [...data.title, router.meta.title]
-
-          if (router.redirect !== 'noRedirect') {
-            // only push the routes with title
-            // special case: need to exclude parent router without redirect
-            res.push(data)
-          }
-        }
-
-        // recursive child routes
-        if (router.children) {
-          const tempRoutes = this.generateRoutes(router.children, data.path, data.title)
-          if (tempRoutes.length >= 1) {
-            res = [...res, ...tempRoutes]
-          }
-        }
-      }
-      return res
     },
     querySearch(query) {
       if (query !== '') {

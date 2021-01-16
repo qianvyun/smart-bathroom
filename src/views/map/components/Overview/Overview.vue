@@ -2,46 +2,53 @@
   <el-tabs type="border-card" tab-position="left">
     <el-tab-pane label="厕所总数">
       <div class="overview-item-warp">
-        <div class="overview-item-title">当前项目名称</div>
+        <div class="overview-item-title">{{ currentProject.name }}</div>
         <div class="overview-item-content pie-chart-warp toilets">
-          <total-toilets />
+          <!--<total-toilets />
           <div class="pie-chart-number">300<span class="unit">个</span></div>
-          <div class="pie-chart-title">厕所总数</div>
-          <div class="total-toilets-table-warp"><total-toilets-table /></div>
+          <div class="pie-chart-title">厕所总数</div>-->
+          <div class="total-toilets-table-warp"><total-toilets-table :data-list="toiletList" /></div>
         </div>
       </div>
     </el-tab-pane>
     <el-tab-pane label="使用总人数">
       <div class="overview-item-warp">
-        <div class="overview-item-title">当前项目名称</div>
+        <div class="overview-item-title">{{ currentProject.name }}</div>
         <div class="overview-item-content pie-chart-warp total-usage">
-          <pie-chart />
-          <div class="pie-chart-number">3000<span class="unit">人</span></div>
+          <pie-chart :chart-data="personSum" />
+          <div class="pie-chart-number">{{ personSum.malePersonSum + personSum.femalePersonSum }}<span class="unit">人</span></div>
           <div class="pie-chart-title">使用总人数</div>
           <div class="pie-chart-massage">
-            <p><i class="icon iconfont icongirl" />女性：2100人</p>
-            <p>占比：85%</p>
+            <p><i class="icon iconfont icongirl" />女性：{{ personSum.femalePersonSum }}人</p>
+            <p>占比：{{ personSum.otherProportion }}%</p>
           </div>
         </div>
       </div>
     </el-tab-pane>
     <el-tab-pane label="好评率">
       <div class="overview-item-warp">
-        <div class="overview-item-title">当前项目名称</div>
+        <div class="overview-item-title">{{ currentProject.name }}</div>
         <div class="overview-item-content pie-chart-warp high-praise-rate">
-          <pie-chart />
-          <div class="pie-chart-number">85%</div>
-          <div class="pie-chart-title">好评率</div>
-          <div class="pie-chart-massage">
-            <p>好评：2100条</p>
-            <p>差评：150条</p>
+          <div class="grade-warp">
+            <div class="grade grade-header">
+              <span class="No">序号</span>
+              <span class="name">厕所名称</span>
+              <span class="score">评分</span>
+            </div>
+            <ul class="grade-body">
+              <li v-for="(item,index) in tableData" :key="item.date" class="grade grade-item">
+                <span class="No">{{ index+1 }}</span>
+                <span class="name">{{ item.toiletName }}</span>
+                <span class="score">{{ item.evaluateScore }}分</span>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
     </el-tab-pane>
     <el-tab-pane label="设备在线总数">
       <div class="overview-item-warp">
-        <div class="overview-item-title">当前项目名称</div>
+        <div class="overview-item-title">{{ currentProject.name }}</div>
         <div class="overview-item-content device">
           <img :src="require('../../../../assets/images/group.png')" width="133" height="198">
           <p class="device-number">1291<span class="unit">台</span></p>
@@ -51,7 +58,7 @@
     </el-tab-pane>
     <el-tab-pane label="天气状态">
       <div class="overview-item-warp">
-        <div class="overview-item-title">当前项目名称</div>
+        <div class="overview-item-title">{{ currentProject.name }}</div>
         <div class="overview-item-content weather">
           <div class="weather-warp">
             <i class="icon iconfont" :class="weatherIcon" />
@@ -62,22 +69,27 @@
       </div>
     </el-tab-pane>
   </el-tabs>
-<!--  <div style="width: 300px;height: 200px;background-color: red"></div>-->
 </template>
 
 <script>
 import PieChart from './pie-chart'
-import AMap from 'vue-amap';
+// import AMap from 'vue-amap';
 import { lazyAMapApiLoaderInstance } from 'vue-amap';
-import TotalToilets from '@/views/map/components/Overview/total-toilets'
+// import TotalToilets from '@/views/map/components/Overview/total-toilets'
 import TotalToiletsTable from '@/views/map/components/Overview/total-toilets-table'
+// import { deepClone } from '@/utils'
+import { getPersonSumByToiletId, getToiletEvaluateByProjectId } from '@/api/map'
 
 export default {
   name: 'Overview',
-  components: { TotalToiletsTable, TotalToilets, PieChart },
+  components: { TotalToiletsTable, PieChart },
   props: {
     city: {
       type: Array,
+      required: true
+    },
+    project: {
+      type: Object,
       required: true
     }
   },
@@ -86,13 +98,36 @@ export default {
       weatherData: '',
       weather: '',
       reportTime: '',
-      weatherIcon: ''
+      weatherIcon: '',
+      currentProject: this.project,
+      personSum: {
+        personSumThisMonth: null,
+        personSumPreMonth: null,
+        malePersonSum: 0, // 男厕所入厕总人数
+        femalePersonSum: 0, // 女厕所入厕总人数
+        proportion: '', // 男性占比
+        otherProportion: '' // 女性占比
+      },
+      toiletList: [],
+      tableData: []
     }
   },
   computed: {
 
   },
+  watch: {
+    project(newVal) {
+      if (newVal) {
+        this.currentProject = newVal;
+        this.toiletList = this.currentProject.toilets;
+      }
+    }
+  },
   created() {
+    // this.$store.dispatch('user/getProjectList');
+    this.toiletList = this.currentProject.toilets;
+    this.getPersonSum();
+    this.getToiletEvaluateByProjectId()
     lazyAMapApiLoaderInstance.load().then(() => {
       this.getCurrentCity(this.city);
     })
@@ -102,7 +137,9 @@ export default {
      * 根据地图中心坐标获取当前城市
      */
     getCurrentCity(center) {
+      // eslint-disable-next-line no-undef
       AMap.service('AMap.Geocoder', () => { // 回调函数
+        // eslint-disable-next-line no-undef
         const geocoder = new AMap.Geocoder({});
         geocoder.getAddress(center, (status, result) => {
           if (status === 'complete' && result.info === 'OK') {
@@ -119,8 +156,10 @@ export default {
      */
     getCurrentWeather(city) {
       const $this = this;
+      // eslint-disable-next-line no-undef
       AMap.plugin('AMap.Weather', function() {
         // 创建天气查询实例
+        // eslint-disable-next-line no-undef
         const weather = new AMap.Weather();
         // 执行实时天气信息查询
         weather.getLive(city, function(err, data) {
@@ -281,6 +320,23 @@ export default {
       }
       this.weatherIcon = weatherClass;
       return weatherClass;
+    },
+    async getPersonSum() {
+      const requestData = {
+        toiletId: this.currentProject.id
+      }
+      const data = await getPersonSumByToiletId(requestData);
+      this.personSum = data.data.data
+    },
+    async getToiletEvaluateByProjectId() {
+      const requestData = {
+        projectId: this.currentProject.id
+        // projectId: 1
+      }
+      const data = await getToiletEvaluateByProjectId(requestData);
+      this.tableData = data.data.sort((a, b) => {
+        return Number(b.evaluateScore) - Number(a.evaluateScore)
+      })
     }
   }
 }
@@ -353,6 +409,37 @@ export default {
       }
     }
   }
+  .high-praise-rate{
+    padding: 12px 0 0;
+    /*height: 330px;*/
+    .grade-body{
+      height: 280px;
+      overflow: overlay;
+    }
+    .grade{
+      height: 39px;
+      line-height: 39px;
+      text-align: center;
+      border-bottom: 1px solid #EFEFEF;
+      font-size: 0;
+      &.grade-header{
+        background: #F4F4F4;
+        border-radius: 6px;
+      }
+      .No,.name,.score{
+        display: inline-block;
+        width: 100px;
+        font-size: 12px;
+        color: #36437A;
+      }
+      .name{
+        width: 145px;
+      }
+      .score{
+        width: 145px;
+      }
+    }
+  }
   .device{
     text-align: center;
     font-size: 0;
@@ -400,10 +487,13 @@ export default {
   }
   .total-toilets-table-warp{
     position: absolute;
-    width: 220px;
-    height: 280px;
-    left: 160px;
-    top: 45px;
+    /*width: 220px;*/
+    width: 360px;
+    height: 320px;
+    /*height: 280px;*/
+    /*left: 160px;*/
+    /*top: 45px;*/
+    top: 20px;
   }
 }
 </style>

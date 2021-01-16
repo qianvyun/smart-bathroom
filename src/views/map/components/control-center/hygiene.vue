@@ -9,30 +9,30 @@
           <li>
             <div class="describe">卫生环境</div>
             <div class="stars">
-              <i v-for="(item,index) of stars.environmental" :key="index" class="icon iconfont iconstar" :class="{light:item}" />
+              <el-rate v-model="stars.environmental" disabled />
             </div>
           </li>
           <li>
             <div class="describe">管路服务</div>
             <div class="stars">
-              <i v-for="(item,index) of stars.service" :key="index+'a'" class="icon iconfont iconstar" :class="{light:item}" />
+              <el-rate v-model="stars.service" disabled />
             </div>
           </li>
           <li>
             <div class="describe">设施设备</div>
             <div class="stars">
-              <i v-for="(item,index) of stars.facilities" :key="index+'b'" class="icon iconfont iconstar" :class="{light:item}" />
+              <el-rate v-model="stars.facilities" disabled />
             </div>
           </li>
         </ul>
       </div>
       <div class="cleaner-msg clear">
-        <div class="pic"><img src="" alt=""></div>
+        <div class="pic"><img :src="cleaner.avatar" alt=""></div>
         <div class="msg">
           <h6>当前保洁员</h6>
-          <p><span>姓名：</span>张三</p>
-          <p><span>状态：</span>在岗</p>
-          <p><span>评价等级：</span>优</p>
+          <p><span>姓名：</span>{{ cleaner.name }}</p>
+          <p><span>状态：</span>{{ cleaner.state }}</p>
+          <p><span>评价等级：</span>{{ cleaner.ranking }}</p>
         </div>
       </div>
     </div>
@@ -40,28 +40,86 @@
 </template>
 
 <script>
+import { getCleanerIsOnline, getToiletEvaluateByToiletId } from '@/api/map'
+
 export default {
   name: 'Hygiene',
   props: {
-    hygieneData: {
-      type: Object,
-      default: () => {}
-      // required: true
+    toiletId: {
+      type: [String, Number],
+      required: true
     }
   },
   data() {
     return {
       num: 3,
+      id: this.toiletId,
+      // id: 1,
       stars: {
-        environmental: [true, true, true, false, false],
-        service: [true, true, true, true, true],
-        facilities: [true, true, true, false, false]
+        environmental: 0,
+        service: 0,
+        facilities: 0
+      },
+      cleaner: {
+        name: '',
+        avatar: '',
+        state: '',
+        ranking: ''
       }
+    }
+  },
+  watch: {
+    toiletId(newValue, oldValue) {
+      if (newValue) {
+        this.id = newValue
+      }
+    }
+  },
+  created() {
+    this.getCleanerIsOnline();
+    this.getToiletEvaluateByToiletId();
+  },
+  methods: {
+    async getCleanerIsOnline() {
+      const requestData = {
+        id: this.id
+      }
+      const data = await getCleanerIsOnline(requestData);
+      this.cleaner.name = data.data.name;
+      this.cleaner.avatar = data.data.avatar;
+      switch (data.data.state) {
+        case 1:
+          this.cleaner.state = '正常';
+          break;
+        case 2:
+          this.cleaner.state = '在线';
+          break;
+        case 3:
+          this.cleaner.state = '离线';
+          break;
+        default:
+          this.cleaner.state = '禁用';
+          break;
+      }
+      this.cleaner.ranking = data.data.value;
+    },
+    async getToiletEvaluateByToiletId() {
+      const requestData = {
+        toiletId: this.id
+      }
+      const data = await getToiletEvaluateByToiletId(requestData);
+      this.stars.environmental = data.data.value1;
+      this.stars.service = data.data.value2;
+      this.stars.facilities = data.data.value3;
     }
   }
 }
 </script>
-
+<style lang="scss">
+  .stars .el-rate__icon {
+    font-size: 24px;
+  }
+</style>
 <style lang="scss" scoped>
 @import "~@/styles/mixin.scss";
 .hygiene-warp{
